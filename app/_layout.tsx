@@ -9,25 +9,7 @@ export default function RootLayout() {
   return (
     <>
       <Stack>
-<Stack.Screen name="project" options={{ 
-    headerTitle:'',
-          header:({ navigation }) => (
-              <SafeAreaView edges={['top']}>
-                <View style={styles.headerLeftContainer}>
-                  <View style={{display:"flex",flexDirection:'row',alignItems:'center',gap:5 }}>
-                    <TouchableOpacity>
-                   <Ionicons name="arrow-back-circle-sharp" size={30} color="white" onPress={navigation.goBack}/>
-                    </TouchableOpacity>
-                  <Text style={{color:"white"}} > Projet 001-925</Text>
-
-                  </View>
-                  <Image source={images.logo} style={{width:50,height:50}}></Image>
-                </View>
-              </SafeAreaView>
-            ),
-
-}} />
-        <Stack.Screen name="home" options={{ 
+         <Stack.Screen name="home" options={{ 
           headerTitle:'',
           header:({ navigation }) => (
               <SafeAreaView edges={['top']}>
@@ -39,6 +21,25 @@ export default function RootLayout() {
             ),
 
         }} />
+        <Stack.Screen name="project" options={{ 
+            headerTitle:'',
+                  header:({ navigation }) => (
+                      <SafeAreaView edges={['top']}>
+                        <View style={styles.headerLeftContainer}>
+                          <View style={{display:"flex",flexDirection:'row',alignItems:'center',gap:5 }}>
+                            <TouchableOpacity>
+                          <Ionicons name="arrow-back-circle-sharp" size={30} color="white" onPress={navigation.goBack}/>
+                            </TouchableOpacity>
+                          <Text style={{color:"white"}} > Projet 001-925</Text>
+
+                          </View>
+                          <Image source={images.logo} style={{width:50,height:50}}></Image>
+                        </View>
+                      </SafeAreaView>
+                    ),
+
+        }} />
+       
 
         
         <Stack.Screen name="login" options={{ headerShown: false }} />

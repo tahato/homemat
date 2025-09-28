@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -21,7 +22,7 @@ export default function HomeInfoCard({ key }) {
     const strokeDashoffsetDelay = circumference - (circumference * (percentPayed + percentDelay)) / 100;
 
     return (
-        <TouchableOpacity style={styles.cardContainer} >
+        <TouchableOpacity style={styles.cardContainer} onPress={()=> router.push('/project')} >
 
             <View style={styles.cardHeader}>
                 <Text style={{ fontFamily: 'jura', fontWeight: 'bold', fontSize: 17 }}>Project <Text style={{ color: 'black', fontWeight: 'semibold', fontSize: 13 }}>  001-0925</Text> </Text>

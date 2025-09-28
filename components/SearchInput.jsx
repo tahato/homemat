@@ -8,7 +8,7 @@ export default function SearchInput() {
         <TouchableOpacity>
         <EvilIcons name='search' size={30}/>
         </TouchableOpacity>
-        <TextInput className='flex-1  text-xl mx-2' />
+        <TextInput className='flex-1  text-xl mx-2'  style={{flex:1}} />
     </View>
   )
 }

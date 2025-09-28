@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import DropDownList from '../components/DropDownList'
+import BonCommande from '../components/listMenus/BonCommande'
 import Estimation from '../components/listMenus/Estimation'
+import Production from '../components/listMenus/Production'
+import Livraison from '../components/listMenus/Livraison'
 
 export default function project() {
     const [contentHeight, setContentHeight] = useState(0)
-    const loadHeight = (e) => {
-        setContentHeight(e.nativeEvent.layout.height)
-    }
+    const [openIndex, setOpenIndex] = useState(null);
 
     return (
         <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
@@ -19,53 +20,47 @@ export default function project() {
                     fieldStyle={styles.listfield}
                     title='Estimation'
                     list={true}
-
+                    duration={500}
+                    isOpen={openIndex === 1}
+                    onToggle={() =>
+                        setOpenIndex(openIndex === 1 ? null : 1) // close others
+                    }
                 >
-                    <View onLayout={(e) => loadHeight(e)}>
-                        <Estimation />
-                    </View>
+                    <Estimation />
                 </DropDownList>
                 <DropDownList
                     fieldStyle={styles.listfield}
                     title='Bon de commande'
                     list={true}
-
+                    duration={300}
+                    isOpen={openIndex === 2}
+                    onToggle={() =>
+                        setOpenIndex(openIndex === 2 ? null : 2) // close others
+                    }
                 >
-                    <View onLayout={(e) => { setContentHeight(e.nativeEvent.layout.height) }}>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                    </View>
+                    <BonCommande />
                 </DropDownList>
                 <DropDownList
                     fieldStyle={styles.listfield}
-                    title='EsProductiontimation'
+                    title='Productiont'
                     list={true}
-
+                    isOpen={openIndex === 3}
+                    onToggle={() =>
+                        setOpenIndex(openIndex === 3 ? null : 3) // close others
+                    }
                 >
-                    <View onLayout={(e) => { setContentHeight(e.nativeEvent.layout.height) }}>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                    </View>
+                  <Production/>
                 </DropDownList>
                 <DropDownList
                     fieldStyle={styles.listfield}
                     title='Livraison'
                     list={true}
-
+                    isOpen={openIndex === 4}
+                    onToggle={() =>
+                        setOpenIndex(openIndex === 4 ? null : 4) // close others
+                    }
                 >
-                    <View onLayout={(e) => { setContentHeight(e.nativeEvent.layout.height) }}>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                        <Text>taha</Text>
-                    </View>
+                    <Livraison/>
                 </DropDownList>
 
             </ScrollView>
@@ -78,10 +73,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight: 'bold',
+        marginBottom:20
     },
     container: {
         flexGrow: 1,
+        paddingTop:10,
         paddingHorizontal: 20,
+        paddingBottom:20
     },
     listfield: {
         width: '100%',

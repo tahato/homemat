@@ -1,12 +1,11 @@
-import { useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import DropDownList from '../DropDownList'
+import { useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import DropDownList from '../DropDownList';
 
-export default function Estimation() {
-
+export default function BonCommande() {
     const [contentHeight, setContentHeight] = useState(0)
-    const [data, setData] = useState([1, 2])
     const [openIndex, setOpenIndex] = useState(null);
+    const [data, setData] = useState([1, 2])
 
 
 
@@ -25,8 +24,19 @@ export default function Estimation() {
                 <View onLayout={(e) => { setContentHeight(e.nativeEvent.layout.height) }} style={styles.menu}>
                     {data.map((i) => (
                         <View style={styles.datafield} key={i} >
-                            <Text>Estimation n° 00004546</Text>
-                            <Text>3400€</Text>
+                            <View>
+                                <Text style={{ fontWeight: 'bold' }}>Garde du corp Droit</Text>
+                                <Image></Image>
+                            </View>
+                            <View style={styles.detailsBetween}>
+                                <Text>Gamme excellence</Text>
+                                <Text style={{ fontWeight: '300' }}>12m</Text>
+                            </View>
+                            <View style={styles.detailsBetween}>
+                                <Text>3400€</Text>
+                                <Text style={{ fontWeight: '300' }}>3 Conceptions</Text>
+                            </View>
+
                         </View>
                     ))}
                     <View>
@@ -35,6 +45,7 @@ export default function Estimation() {
                             <Text style={{ color: '#ffffff', fontWeight: "semibold" }} > Envoyé au client</Text>
                         </TouchableOpacity>
                     </View>
+
                 </View>
             </DropDownList>
             <DropDownList
@@ -42,20 +53,12 @@ export default function Estimation() {
                 fieldStyle={styles.listfield}
                 lsit={false}
 
-            >
-            </DropDownList>
-            <DropDownList
-                title='Paiement'
-                fieldStyle={styles.listfield}
-                lsit={false}
-            >
-            </DropDownList>
+            />
             <DropDownList
                 title='Validation'
                 fieldStyle={styles.listfield}
                 lsit={false}
-            >
-            </DropDownList>
+            />
         </View>
     )
 }
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         display: 'flex',
         flex: 1,
-        gap: 5,
+        gap: 15,
         // justifyContent:'center',
         // alignItems:'center'
         // width:'100%',
@@ -85,7 +88,16 @@ const styles = StyleSheet.create({
     datafield: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#E4E4E4',
+        backgroundColor: '#ffffff',
+        padding: 5,
+        borderRadius: 10,
+    },
+    detailsBetween: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
         padding: 5,
         borderRadius: 10
     },
