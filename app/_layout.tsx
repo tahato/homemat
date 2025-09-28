@@ -1,21 +1,27 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import images from "../constants/images";
+import images from '../constants/images';
+import Logout from '../components/Logout';
 export default function RootLayout() {
   return (
     <>
       <Stack>
+        <Stack.Screen name="login" options={{ headerShown: false }} />
          <Stack.Screen name="home" options={{ 
           headerTitle:'',
           header:({ navigation }) => (
               <SafeAreaView edges={['top']}>
                 <View style={styles.headerLeftContainer}>
+                  <Image source={images.logo} style={{width:50,height:50}}/>
+                  <View style={{alignItems:"center"}}>
                   <Text style={{color:"white"}} > Bienvenu</Text>
-                  <Image source={images.logo} style={{width:50,height:50}}></Image>
+                  <Text style={{color:"white"}} > Terry Martin le bonoit allegro</Text>
+                  </View>
+          <Logout/>
                 </View>
               </SafeAreaView>
             ),
@@ -33,7 +39,7 @@ export default function RootLayout() {
                           <Text style={{color:"white"}} > Projet 001-925</Text>
 
                           </View>
-                          <Image source={images.logo} style={{width:50,height:50}}></Image>
+                          {/* <Image source={images.logo} style={{width:50,height:50}}></Image> */}
                         </View>
                       </SafeAreaView>
                     ),
@@ -42,7 +48,6 @@ export default function RootLayout() {
        
 
         
-        <Stack.Screen name="login" options={{ headerShown: false }} />
         {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
       </Stack>
       <StatusBar style="auto" />

@@ -1,15 +1,48 @@
+import { FontAwesome5 } from '@expo/vector-icons';
+import axios from 'axios';
 import { Image } from 'expo-image';
+import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import images from '../constants/images';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { useState } from 'react';
+import { setItem } from '../tools/AsyncStorage';
+import { router } from 'expo-router';
 
 
 export default function Form() {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState(false)
+    const API_URL = process.env.EXPO_PUBLIC_API_URL;
     const [showPassword, setShowPassword] = useState(false)
 
+    const handleLogin = async () => {
+        console.log(process.env.EXPO_PUBLIC_API_URL);
+        console.log(process.env.EXPO_PUBLIC_COMPANY_CODE);
+        // console.log(email,password, process.env.EXPO_PUBLIC_COMPANY_CODE);
 
+        if (email == '' || password == '') {
+            setError(true)
+        } else {
 
+            await axios
+                .post(`${API_URL}/api/login`, { username: email, password, company_code: process.env.EXPO_PUBLIC_COMPANY_CODE },
+                    {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    }
+                )
+                .then((res) => {
+                    console.log(res.data);
+                    setItem('token', res.data.access_token)
+                    router.replace('./home')
+                })
+                .catch(err => {
+                 console.log(err);
+                 
+                });
+        }
+    }
 
     return (
 
@@ -23,7 +56,7 @@ export default function Form() {
                     <TextInput
                         keyboardType='email'
                         style={styles.input}
-                    // onChangeText={e => setEmail(e)}
+                        onChangeText={e => setEmail(e)}
 
                     />
                 </View>
@@ -31,14 +64,14 @@ export default function Form() {
                     <Text style={styles.label}>Mot de passe</Text>
                     <TextInput
                         style={styles.input}
-                    // value={password}
-                    // onChangeText={e => setPassword(e)}
-                    // secureTextEntry={!showPassword}
+                        value={password}
+                        onChangeText={e => setPassword(e)}
+                        secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity style={styles.eye}
-                    onPress={() => setShowPassword(!showPassword)} 
+                        onPress={() => setShowPassword(!showPassword)}
                     >
-                        <FontAwesome5 name={showPassword ?'eye-slash': 'eye'}/>
+                        <FontAwesome5 name={showPassword ? 'eye-slash' : 'eye'} />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.formField}>
@@ -46,8 +79,8 @@ export default function Form() {
                     <TextInput />
                 </View>
             </View>
-            <TouchableOpacity activeOpacity={0.9} style={styles.btnConnect}  >
-                <Text style={styles.btnText}>login</Text>
+            <TouchableOpacity activeOpacity={0.9} style={styles.btnConnect} onPress={handleLogin} >
+                <Text style={styles.btnText}>se connecter</Text>
             </TouchableOpacity>
             <Text style={styles.bottomText}>
 
@@ -91,13 +124,13 @@ const styles = StyleSheet.create({
         gap: 10
     },
     input: {
-        paddingHorizontal: 10,
+        paddingHorizontal: 13,
         borderColor: "#D9D9D9",
         borderWidth: 1,
         borderStyle: 'solid',
         borderRadius: 3,
         height: 35,
-        fontSize: 12,
+        fontSize: 14,
         paddingVertical: 0,
         fontFamily: "semibold",
         flex: 1,
@@ -109,7 +142,7 @@ const styles = StyleSheet.create({
         color: "#293846",
         fontSize: 12,
         width: "35%",
-        fontFamily:'bold',
+        fontFamily: 'bold',
         textAlign: "right",
     },
     btnConnect: {
@@ -122,7 +155,7 @@ const styles = StyleSheet.create({
     btnText: {
         color: "#ffffff",
         fontSize: 14,
-        // fontFamily: fonts.mainFont,
+        fontWeight: 'bold',
         textAlign: 'center'
     },
     bottomText: {
@@ -168,8 +201,8 @@ const styles = StyleSheet.create({
         zIndex: 999,
         elevation: 7
     },
-    eye:{
-        position:"absolute",
-        right:5
+    eye: {
+        position: "absolute",
+        right: 5
     }
 })

@@ -47,5 +47,6 @@ const styles = StyleSheet.create({
         paddingHorizontal:15,
         display: 'flex',
         gap: 10,
-    }
+    },
+    
 })

@@ -22,21 +22,41 @@ export default function HomeInfoCard({ key }) {
     const strokeDashoffsetDelay = circumference - (circumference * (percentPayed + percentDelay)) / 100;
 
     return (
-        <TouchableOpacity style={styles.cardContainer} onPress={()=> router.push('/project')} >
+        <TouchableOpacity style={styles.cardContainer} onPress={() => router.push('/project')} >
 
-            <View style={styles.cardHeader}>
-                <Text style={{ fontFamily: 'jura', fontWeight: 'bold', fontSize: 17 }}>Project <Text style={{ color: 'black', fontWeight: 'semibold', fontSize: 13 }}>  001-0925</Text> </Text>
+            {/* <View style={styles.cardHeader}>
+                <Text style={{ fontFamily: 'jura', fontSize: 17 }}>Projet  </Text>
+                <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 15 }}>  001-0925</Text>
                 <Text style={{ fontSize: 12 }}>Terry Martin le bonoit allegro</Text>
-            </View>
+            </View> */}
+
             <View style={styles.infoContainer}>
                 <View style={styles.cardInfo}>
-                    <View style={styles.infoLine}>
-                        <Text className="text-xl font-mainFont mt-1">ddddddddddddd DA</Text>
-                        <Text className="text-sm text-gray-500 mt-1">{date}</Text>
+                    <View style={styles.details}>
+                        <Text>Client: </Text>
+                        <Text style={{ fontWeight: 'bold' }}>Leroy Merlin Vourles</Text>
                     </View>
+                    <View style={styles.details}>
+                        <Text  >Créer le:</Text>
+                        <Text style={{ fontWeight: 'bold' }}>13/07/2016</Text>
+                    </View>
+                    <View style={styles.details}>
+                        <Text  >Modifié le:</Text>
+                        <Text style={{ fontWeight: 'bold' }}> 13/07/2016</Text>
+                    </View>
+
+                    <View style={styles.details}>
+                        <Text  >Cloturé le:</Text>
+                        <Text style={{ fontWeight: 'bold' }}>--/--/----</Text>
+                    </View>
+
+
                 </View>
                 <View style={styles.svg}>
-
+                    <View >
+                        <Text style={{ fontFamily: 'jura', fontSize: 15 }}>Projet  </Text>
+                        <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 13 }}>001-0925</Text>
+                    </View>
                     <Svg width={90} height={90} viewBox="0 0 100 100">
                         <Circle
                             cx="50"
@@ -72,14 +92,16 @@ export default function HomeInfoCard({ key }) {
                             rotation="-90"
                             origin="50,50"
                         />
-                    </Svg>
                     <Text style={styles.percentage}>55</Text>
+                    </Svg>
                 </View>
 
 
             </View>
-            <View style={styles.client}>
-                <Text>Client</Text>
+
+            <View style={styles.details}>
+                <Text style={{ fontWeight: 'semibold' }} >Responsable:</Text>
+                <Text> Terry Martin le bonoit allegro</Text>
             </View>
 
 
@@ -95,6 +117,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: 5,
+        paddingHorizontal: 5,
         borderRadius: 20,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
@@ -114,30 +137,36 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         display: 'flex',
+        width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // backgroundColor:'red',
-        gap: 50,
-        paddingHorizontal: 10
+
     },
     svg: {
         justifyContent: 'center',
         alignItems: 'center',
         width: '100px',
-        height: '100px'
+        height: '100px',
+        position:'relative'
     },
     // className="absolute text-lg font-semibold text-gray-800"
     percentage: {
         position: 'absolute',
         fontFamily: 'Jura',
-        color: 'black'
+        color: 'black',
+        top:35,
+        left:35
     },
     cardInfo: {
         display: 'flex',
-        justifyContent: 'center',
+        // justifyContent: 'center',
 
     },
-    client: {
-        alignItems: 'center'
-    }
+  
+    details: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 5,
+    },
 })
