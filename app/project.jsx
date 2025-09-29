@@ -20,7 +20,7 @@ export default function project() {
                     fieldStyle={styles.listfield}
                     title='Estimation'
                     list={true}
-                    duration={500}
+                    duration={700}
                     isOpen={openIndex === 1}
                     onToggle={() =>
                         setOpenIndex(openIndex === 1 ? null : 1) // close others

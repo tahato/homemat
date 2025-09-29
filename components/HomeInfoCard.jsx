@@ -3,14 +3,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 export default function HomeInfoCard({ key }) {
-
+    const text ='Leroy Merlin Vourles '
     let percentPayed = 0
     let percentDelay = 0
-    if (20 > 0) {
-        percentPayed = ((50 / 100) * 100).toFixed(2);
+    if (30 > 0) {
+        percentPayed = ((50/ 100) * 100).toFixed(2);
     }
     if (10 > 0) {
-        percentDelay = ((20 / 100) * 100).toFixed(2);
+        percentDelay = ((50/ 100) * 100).toFixed(2);
     }
 
     const date = '28/06/2025';
@@ -33,28 +33,28 @@ export default function HomeInfoCard({ key }) {
             <View style={styles.infoContainer}>
                 <View style={styles.cardInfo}>
                     <View style={styles.details}>
-                        <Text>Client: </Text>
-                        <Text style={{ fontWeight: 'bold' }}>Leroy Merlin Vourles</Text>
+                        <Text style={{ fontWeight: 'bold' }}>Client: </Text>
+                        <Text style={{flexWrap: "wrap" }} >{text.length > 42 ? text.substring(0, 42) + "..." : text}</Text>
                     </View>
                     <View style={styles.details}>
-                        <Text  >Créer le:</Text>
-                        <Text style={{ fontWeight: 'bold' }}>13/07/2016</Text>
+                        <Text style={{ fontWeight: 'bold' }} >Créer le:</Text>
+                        <Text>13/07/2016</Text>
                     </View>
                     <View style={styles.details}>
-                        <Text  >Modifié le:</Text>
-                        <Text style={{ fontWeight: 'bold' }}> 13/07/2016</Text>
+                        <Text  style={{ fontWeight: 'bold' }} >Modifié le:</Text>
+                        <Text > 13/07/2016</Text>
                     </View>
 
                     <View style={styles.details}>
-                        <Text  >Cloturé le:</Text>
-                        <Text style={{ fontWeight: 'bold' }}>--/--/----</Text>
+                        <Text style={{ fontWeight: 'bold' }}>Cloturé le:</Text>
+                        <Text >--/--/----</Text>
                     </View>
 
 
                 </View>
                 <View style={styles.svg}>
-                    <View >
-                        <Text style={{ fontFamily: 'jura', fontSize: 15 }}>Projet  </Text>
+                    <View>
+                        <Text style={{ fontFamily: 'jura', fontSize: 15 ,textAlign:'center'}}>Projet</Text>
                         <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 13 }}>001-0925</Text>
                     </View>
                     <Svg width={90} height={90} viewBox="0 0 100 100">
@@ -100,8 +100,8 @@ export default function HomeInfoCard({ key }) {
             </View>
 
             <View style={styles.details}>
-                <Text style={{ fontWeight: 'semibold' }} >Responsable:</Text>
-                <Text> Terry Martin le bonoit allegro</Text>
+                
+                <Text style={{fontSize:11}}> Terry Martin le bonoit allegro</Text>
             </View>
 
 
@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     },
     cardInfo: {
         display: 'flex',
+        width:'50%'
         // justifyContent: 'center',
 
     },
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     details: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'stretch',
         padding: 5,
     },
 })

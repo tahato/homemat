@@ -1,15 +1,22 @@
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Stack } from 'expo-router';
+import { getItem } from "@/tools/AsyncStorage";
+import { Ionicons } from "@expo/vector-icons";
+import { router, Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import images from '../constants/images';
 import Logout from '../components/Logout';
+import images from '../constants/images';
+
+
 export default function RootLayout() {
-  return (
+    return (
+
     <>
       <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
          <Stack.Screen name="home" options={{ 
           headerTitle:'',
