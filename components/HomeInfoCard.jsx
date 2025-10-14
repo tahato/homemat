@@ -2,8 +2,9 @@ import { router } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
-export default function HomeInfoCard({ key }) {
-    const text ='Leroy Merlin Vourles '
+export default function HomeInfoCard({ project }) {
+    
+    const client =(project?.fname?project?.fname:'')+ ' '+( project.lname ? project.lname :'')
     let percentPayed = 0
     let percentDelay = 0
     if (30 > 0) {
@@ -34,15 +35,15 @@ export default function HomeInfoCard({ key }) {
                 <View style={styles.cardInfo}>
                     <View style={styles.details}>
                         <Text style={{ fontWeight: 'bold' }}>Client: </Text>
-                        <Text style={{flexWrap: "wrap" }} >{text.length > 42 ? text.substring(0, 42) + "..." : text}</Text>
+                        <Text style={{flexWrap: "wrap" }} >{client.length > 42 ? client.substring(0, 42) + "..." : client}</Text>
                     </View>
                     <View style={styles.details}>
                         <Text style={{ fontWeight: 'bold' }} >Créer le:</Text>
-                        <Text>13/07/2016</Text>
+                        <Text>{project.created_at}</Text>
                     </View>
                     <View style={styles.details}>
                         <Text  style={{ fontWeight: 'bold' }} >Modifié le:</Text>
-                        <Text > 13/07/2016</Text>
+                        <Text >{project.updated_at}</Text>
                     </View>
 
                     <View style={styles.details}>
@@ -54,8 +55,8 @@ export default function HomeInfoCard({ key }) {
                 </View>
                 <View style={styles.svg}>
                     <View>
-                        <Text style={{ fontFamily: 'jura', fontSize: 15 ,textAlign:'center'}}>Projet</Text>
-                        <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 13 }}>001-0925</Text>
+                        <Text style={{ fontFamily: 'jura', fontSize: 15 ,textAlign:'center'}}>{project.name}</Text>
+                        {/* <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 13 }}>001-0925</Text> */}
                     </View>
                     <Svg width={90} height={90} viewBox="0 0 100 100">
                         <Circle

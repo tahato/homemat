@@ -44,12 +44,7 @@ export default function Estimation() {
 
             >
             </DropDownList>
-            <DropDownList
-                title='Paiement'
-                fieldStyle={styles.listfield}
-                lsit={false}
-            >
-            </DropDownList>
+           
             <DropDownList
                 title='Validation'
                 fieldStyle={styles.listfield}

@@ -9,12 +9,13 @@ import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Logout from '../components/Logout';
 import images from '../constants/images';
+import GlobalProvider from '../context/GlobaleProvider';
 
 
 export default function RootLayout() {
     return (
 
-    <>
+    <GlobalProvider>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
@@ -58,7 +59,7 @@ export default function RootLayout() {
         {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
       </Stack>
       <StatusBar style="auto" />
-    </>
+    </GlobalProvider>
 
   );
 }

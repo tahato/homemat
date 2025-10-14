@@ -12,7 +12,7 @@ export default function Logout() {
         try {
             const token = await getItem("token");
             // console.log(token);
-                        await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/api/logout?company_app=test`, {}, {
+                        await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/api/logout?company_app=homemat`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     // 'Content-Type': 'application/json',
