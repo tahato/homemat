@@ -9,10 +9,12 @@ import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Logout from '../components/Logout';
 import images from '../constants/images';
+import HeaderProject from '../components/HeaderProject';
 import GlobalProvider from '../context/GlobaleProvider';
 
 
 export default function RootLayout() {
+
     return (
 
     <GlobalProvider>
@@ -35,21 +37,10 @@ export default function RootLayout() {
             ),
 
         }} />
-        <Stack.Screen name="project" options={{ 
+        <Stack.Screen name="[project]" options={{ 
             headerTitle:'',
                   header:({ navigation }) => (
-                      <SafeAreaView edges={['top']}>
-                        <View style={styles.headerLeftContainer}>
-                          <View style={{display:"flex",flexDirection:'row',alignItems:'center',gap:5 }}>
-                            <TouchableOpacity>
-                          <Ionicons name="arrow-back-circle-sharp" size={30} color="white" onPress={navigation.goBack}/>
-                            </TouchableOpacity>
-                          <Text style={{color:"white"}} > Projet 001-925</Text>
-
-                          </View>
-                          {/* <Image source={images.logo} style={{width:50,height:50}}></Image> */}
-                        </View>
-                      </SafeAreaView>
+                    <HeaderProject />
                     ),
 
         }} />

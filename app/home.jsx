@@ -18,20 +18,19 @@ export default function home() {
     }, []);
     useEffect(() => {
         fetchData();
-    }, [])
+    }, [token])
 
     const fetchData = async () => {
         await axios
             .get(`${process.env.EXPO_PUBLIC_API_URL}/api/homemat/projects?company_code=${process.env.EXPO_PUBLIC_COMPANY_CODE}`,
                 {
                     headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
                         "Authorization": `Bearer ${token}`,
                     },
                 }
             )
             .then((res) => {
-                setProjects(res?.data)
+                setProjects(res?.data.data)
             })
             .catch(err => {
                 console.log(err);
@@ -70,7 +69,7 @@ export default function home() {
 
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 5,
+        paddingVertical: 15,
         paddingHorizontal: 15,
         display: 'flex',
         gap: 20,

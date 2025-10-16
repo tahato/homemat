@@ -1,18 +1,50 @@
-import { useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import axios from 'axios'
+import { useLocalSearchParams } from 'expo-router'
+import { useEffect, useState } from 'react'
+import { ScrollView, StyleSheet, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import DropDownList from '../components/DropDownList'
 import BonCommande from '../components/listMenus/BonCommande'
 import Estimation from '../components/listMenus/Estimation'
-import Production from '../components/listMenus/Production'
 import Livraison from '../components/listMenus/Livraison'
+import Production from '../components/listMenus/Production'
+import { useGlobalContext } from '../context/GlobaleProvider'
 
 export default function project() {
-    const [contentHeight, setContentHeight] = useState(0)
+    const { project } = useLocalSearchParams();
+    const id = parseInt(project);
+    const { token } = useGlobalContext();
     const [openIndex, setOpenIndex] = useState(null);
+    const [projectInfo, setProjectInfo] = useState([]);
+
+    useEffect(() => {
+        getProject()
+    }, [])
+
+    const getProject = async () => {
+        await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/api/homemat/projectById?company_code=${process.env.EXPO_PUBLIC_COMPANY_CODE}`,
+            { id },
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            })
+            .then((res) => {
+                setProjectInfo(res.data.data)
+                console.log(res.data.data);
+                
+
+            })
+            .catch(err => {
+                console.log(err.message);
+
+            });
+    }
+                console.log('hichem ', projectInfo.quotation_level,    projectInfo.quotation_number, projectInfo.quotation_ttc );
+
 
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
+        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }} edges={['top', 'bottom']}>
             <Text style={styles.title}>Road Map</Text>
             <ScrollView style={styles.container} contentContainerStyle={{ gap: 5 }}>
 
@@ -25,8 +57,14 @@ export default function project() {
                     onToggle={() =>
                         setOpenIndex(openIndex === 1 ? null : 1) // close others
                     }
+                    waiting={!projectInfo?.quotation_level && true}
+                    checked={projectInfo.quotation_level && true}
                 >
-                    <Estimation />
+                    <Estimation
+                        level={projectInfo.quotation_level}
+                        number={projectInfo.quotation_number}
+                        ttc={projectInfo.quotation_ttc}
+                    />
                 </DropDownList>
                 <DropDownList
                     fieldStyle={styles.listfield}
@@ -49,7 +87,7 @@ export default function project() {
                         setOpenIndex(openIndex === 3 ? null : 3) // close others
                     }
                 >
-                  <Production/>
+                    <Production />
                 </DropDownList>
                 <DropDownList
                     fieldStyle={styles.listfield}
@@ -60,7 +98,7 @@ export default function project() {
                         setOpenIndex(openIndex === 4 ? null : 4) // close others
                     }
                 >
-                    <Livraison/>
+                    <Livraison />
                 </DropDownList>
 
             </ScrollView>
@@ -73,13 +111,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom:20
+        marginBottom: 20
     },
     container: {
         flexGrow: 1,
-        paddingTop:10,
+        paddingTop: 10,
         paddingHorizontal: 20,
-        paddingBottom:20
+        paddingBottom: 20
     },
     listfield: {
         width: '100%',

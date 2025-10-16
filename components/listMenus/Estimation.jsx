@@ -1,13 +1,16 @@
-import { useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import DropDownList from '../DropDownList'
 
-export default function Estimation() {
+export default function Estimation({ level, number, ttc }) {
 
     const [contentHeight, setContentHeight] = useState(0)
     const [data, setData] = useState([1, 2])
     const [openIndex, setOpenIndex] = useState(null);
 
+
+   
+    console.log('fdsfsdfgdsgsdg', level, number, ttc);
 
 
     return (
@@ -21,19 +24,21 @@ export default function Estimation() {
                 onToggle={() =>
                     setOpenIndex(openIndex === 1 ? null : 1) // close others
                 }
+                waiting={!level && true}
+                checked={level && true}
             >
                 <View onLayout={(e) => { setContentHeight(e.nativeEvent.layout.height) }} style={styles.menu}>
-                    {data.map((i) => (
-                        <View style={styles.datafield} key={i} >
-                            <Text>Estimation n° 00004546</Text>
-                            <Text>3400€</Text>
-                        </View>
-                    ))}
-                    <View>
 
+                    <View style={styles.datafield}  >
+                        <Text>Estimation  n° {number}</Text>
+                        <Text>{ttc} €</Text>
+                    </View>
+
+                    <View>
+                        {/* 
                         <TouchableOpacity style={styles.btn}>
                             <Text style={{ color: '#ffffff', fontWeight: "semibold" }} > Envoyé au client</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </View>
             </DropDownList>
@@ -41,14 +46,17 @@ export default function Estimation() {
                 title='Envois au client'
                 fieldStyle={styles.listfield}
                 lsit={false}
-
+                waiting={!level && true}
+                checked={level && true}
             >
             </DropDownList>
-           
+
             <DropDownList
                 title='Validation'
                 fieldStyle={styles.listfield}
                 lsit={false}
+                waiting={!level && true}
+                checked={level && true}
             >
             </DropDownList>
         </View>

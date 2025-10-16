@@ -1,10 +1,14 @@
 import { router } from 'expo-router';
+import moment from 'moment';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import { useGlobalContext } from '../context/GlobaleProvider';
 
 export default function HomeInfoCard({ project }) {
-    
+    const {setProjectName}=useGlobalContext();
     const client =(project?.fname?project?.fname:'')+ ' '+( project.lname ? project.lname :'')
+
+
     let percentPayed = 0
     let percentDelay = 0
     if (30 > 0) {
@@ -14,7 +18,10 @@ export default function HomeInfoCard({ project }) {
         percentDelay = ((50/ 100) * 100).toFixed(2);
     }
 
-    const date = '28/06/2025';
+const handlePress=()=>{
+    setProjectName(project.name)
+    router.push(`/${project.id}`)
+}
 
     const radius = 40;
     const strokeWidth = 12;
@@ -23,7 +30,7 @@ export default function HomeInfoCard({ project }) {
     const strokeDashoffsetDelay = circumference - (circumference * (percentPayed + percentDelay)) / 100;
 
     return (
-        <TouchableOpacity style={styles.cardContainer} onPress={() => router.push('/project')} >
+        <TouchableOpacity style={styles.cardContainer} onPress={handlePress} >
 
             {/* <View style={styles.cardHeader}>
                 <Text style={{ fontFamily: 'jura', fontSize: 17 }}>Projet  </Text>
@@ -39,11 +46,11 @@ export default function HomeInfoCard({ project }) {
                     </View>
                     <View style={styles.details}>
                         <Text style={{ fontWeight: 'bold' }} >Créer le:</Text>
-                        <Text>{project.created_at}</Text>
+                        <Text>{moment(project.created_at).format("DD-MM-YYYY")}</Text>
                     </View>
                     <View style={styles.details}>
                         <Text  style={{ fontWeight: 'bold' }} >Modifié le:</Text>
-                        <Text >{project.updated_at}</Text>
+                        <Text >{moment(project.updated_at).format("DD-MM-YYYY")}</Text>
                     </View>
 
                     <View style={styles.details}>

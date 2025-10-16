@@ -16,10 +16,6 @@ export default function Form() {
     const [showPassword, setShowPassword] = useState(false)
 
     const handleLogin = async () => {
-        console.log(process.env.EXPO_PUBLIC_API_URL);
-        console.log(process.env.EXPO_PUBLIC_COMPANY_CODE);
-        // console.log(email,password, process.env.EXPO_PUBLIC_COMPANY_CODE);
-
         if (email == '' || password == '') {
             setError(true)
         } else {
@@ -33,7 +29,6 @@ export default function Form() {
                     }
                 )
                 .then((res) => {
-                    console.log(res.data);
                     setItem('token', res.data.access_token)
                     router.replace('./home')
                 })
