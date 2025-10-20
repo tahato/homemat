@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DropDownList from '../DropDownList';
 
-export default function Livraison() {
+export default function Livraison({state,level}) {
     const [contentHeight, setContentHeight] = useState(0)
     const [openIndex, setOpenIndex] = useState(null);
     const [data, setData] = useState([1, 2])

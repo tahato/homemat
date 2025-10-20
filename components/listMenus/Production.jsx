@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import images from '../../constants/images';
 import DropDownList from '../DropDownList';
-import images from '../../constants/images'
 
-export default function Production() {
+export default function Production({ state, level }) {
     const [contentHeight, setContentHeight] = useState(0)
     const [openIndex, setOpenIndex] = useState(null);
     const [data, setData] = useState([1, 2])
-
-
 
     return (
         <View>
@@ -21,32 +19,34 @@ export default function Production() {
                 onToggle={() =>
                     setOpenIndex(openIndex === 1 ? null : 1) // close others
                 }
+                checked={level == 2 && state >= 1}
+                waiting={!!level}
             >
                 <View onLayout={(e) => { setContentHeight(e.nativeEvent.layout.height) }} style={styles.menu}>
                     <View>
                         <View style={styles.details}>
-                            <Text style={{fontWeight:'bold'}} >Poid total :</Text>
+                            <Text style={{ fontWeight: 'bold' }} >Poid total :</Text>
                             <Text>1261 kg</Text>
                         </View>
                         <View style={styles.details}>
-                            <Text style={{fontWeight:'bold'}} >Nombre de palettes :</Text>
+                            <Text style={{ fontWeight: 'bold' }} >Nombre de palettes :</Text>
                             <Text> 2</Text>
                         </View>
-                            <View style={styles.details}>
-                            <Text style={{fontWeight:'bold'}} >Poid par palette:</Text>
+                        <View style={styles.details}>
+                            <Text style={{ fontWeight: 'bold' }} >Poid par palette:</Text>
                             <Text> 631 kg</Text>
                         </View>
                         <View style={styles.details}>
-                            <Text style={{fontWeight:'bold'}} >Cloturé le:</Text>
+                            <Text style={{ fontWeight: 'bold' }} >Cloturé le:</Text>
                             <Text>--/--/----</Text>
                         </View>
-                    
+
                         <View style={styles.details}>
-                            <Text style={{fontWeight:'bold'}} >Responsable:</Text>
+                            <Text style={{ fontWeight: 'bold' }} >Responsable:</Text>
                             <Text>Terry Martin le bonoit allegro</Text>
                         </View>
                     </View>
-                   <Image source={images.camion} style={{width:'100%',height:300}} />
+                    <Image source={images.camion} style={{ width: '100%', height: 300 }} />
 
                 </View>
             </DropDownList>
@@ -59,6 +59,9 @@ export default function Production() {
                 // onToggle={() =>
                 //     setOpenIndex(openIndex === 2 ? null : 2) // close others
                 // }
+                waiting={level == 2 && state >= 1}
+                checked={level == 2 && state >= 2}
+
             />
             <DropDownList
                 title='Expédition'
@@ -69,6 +72,8 @@ export default function Production() {
                 // onToggle={() =>
                 //     setOpenIndex(openIndex === 3 ? null : 3) // close others
                 // }
+                waiting={level == 2 && state >= 2}
+                checked={level == 2 && state >= 3}
             />
             <DropDownList
                 title='Réception validé'
@@ -79,6 +84,8 @@ export default function Production() {
                 // onToggle={() =>
                 //     setOpenIndex(openIndex === 4 ? null : 4) // close others
                 // }
+                waiting={level == 2 && state >= 3}
+                checked={level == 2 && state >= 4}
             />
         </View>
     )

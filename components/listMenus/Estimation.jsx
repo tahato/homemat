@@ -7,12 +7,7 @@ export default function Estimation({ level, number, ttc }) {
     const [contentHeight, setContentHeight] = useState(0)
     const [data, setData] = useState([1, 2])
     const [openIndex, setOpenIndex] = useState(null);
-
-
-   
-    console.log('fdsfsdfgdsgsdg', level, number, ttc);
-
-
+    
     return (
         <View>
             <DropDownList

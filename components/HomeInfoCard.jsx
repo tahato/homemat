@@ -5,6 +5,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { useGlobalContext } from '../context/GlobaleProvider';
 
 export default function HomeInfoCard({ project }) {
+    
     const {setProjectName}=useGlobalContext();
     const client =(project?.fname?project?.fname:'')+ ' '+( project.lname ? project.lname :'')
 

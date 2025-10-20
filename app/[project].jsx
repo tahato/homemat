@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text } from 'react-native'
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import DropDownList from '../components/DropDownList'
 import BonCommande from '../components/listMenus/BonCommande'
@@ -16,7 +16,7 @@ export default function project() {
     const { token } = useGlobalContext();
     const [openIndex, setOpenIndex] = useState(null);
     const [projectInfo, setProjectInfo] = useState([]);
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         getProject()
     }, [])
@@ -31,78 +31,106 @@ export default function project() {
             })
             .then((res) => {
                 setProjectInfo(res.data.data)
-                console.log(res.data.data);
-                
-
+                setLoading(false);
             })
             .catch(err => {
                 console.log(err.message);
-
+                setLoading(false);
             });
     }
-                console.log('hichem ', projectInfo.quotation_level,    projectInfo.quotation_number, projectInfo.quotation_ttc );
-
 
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }} edges={['top', 'bottom']}>
-            <Text style={styles.title}>Road Map</Text>
-            <ScrollView style={styles.container} contentContainerStyle={{ gap: 5 }}>
+        <>
+            {loading ?
+                (
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#007bff" />
+                    </View>
+                ) :
+                (
 
-                <DropDownList
-                    fieldStyle={styles.listfield}
-                    title='Estimation'
-                    list={true}
-                    duration={700}
-                    isOpen={openIndex === 1}
-                    onToggle={() =>
-                        setOpenIndex(openIndex === 1 ? null : 1) // close others
-                    }
-                    waiting={!projectInfo?.quotation_level && true}
-                    checked={projectInfo.quotation_level && true}
-                >
-                    <Estimation
-                        level={projectInfo.quotation_level}
-                        number={projectInfo.quotation_number}
-                        ttc={projectInfo.quotation_ttc}
-                    />
-                </DropDownList>
-                <DropDownList
-                    fieldStyle={styles.listfield}
-                    title='Bon de commande'
-                    list={true}
-                    duration={300}
-                    isOpen={openIndex === 2}
-                    onToggle={() =>
-                        setOpenIndex(openIndex === 2 ? null : 2) // close others
-                    }
-                >
-                    <BonCommande />
-                </DropDownList>
-                <DropDownList
-                    fieldStyle={styles.listfield}
-                    title='Productiont'
-                    list={true}
-                    isOpen={openIndex === 3}
-                    onToggle={() =>
-                        setOpenIndex(openIndex === 3 ? null : 3) // close others
-                    }
-                >
-                    <Production />
-                </DropDownList>
-                <DropDownList
-                    fieldStyle={styles.listfield}
-                    title='Livraison'
-                    list={true}
-                    isOpen={openIndex === 4}
-                    onToggle={() =>
-                        setOpenIndex(openIndex === 4 ? null : 4) // close others
-                    }
-                >
-                    <Livraison />
-                </DropDownList>
+                    <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }} edges={['top', 'bottom']}>
+                        <Text style={styles.title}>Road Map</Text>
+                        <ScrollView style={styles.container} contentContainerStyle={{ gap: 5 }}>
 
-            </ScrollView>
-        </SafeAreaView>
+                            <DropDownList
+                                fieldStyle={styles.listfield}
+                                title='Estimation'
+                                list={true}
+                                duration={700}
+                                isOpen={openIndex === 1}
+                                onToggle={() =>
+                                    setOpenIndex(openIndex === 1 ? null : 1) // close others
+                                }
+                                waiting={!projectInfo?.quotation_level && true}
+                                checked={projectInfo.quotation_level && true}
+                            >
+                                <Estimation
+                                    level={projectInfo.quotation_level}
+                                    number={projectInfo.quotation_number}
+                                    ttc={projectInfo.quotation_ttc}
+                                />
+                            </DropDownList>
+                            <DropDownList
+                                fieldStyle={styles.listfield}
+                                title='Bon de commande'
+                                list={true}
+                                duration={300}
+                                isOpen={openIndex === 2}
+                                onToggle={() =>
+                                    setOpenIndex(openIndex === 2 ? null : 2) // close others
+                                }
+                                waiting={(projectInfo.quotation_level == 1 && !projectInfo.order_level) ? true : false}
+                                checked={projectInfo.order_level && true}
+
+                            >
+                                <BonCommande
+                                    quotation_level={projectInfo.quotation_level}
+                                    order_level={projectInfo.order_level}
+                                    count_conceptions={projectInfo.count_conceptions}
+                                    gamme={projectInfo.gamme}
+                                    ttc={projectInfo.quotation_ttc}
+                                />
+                            </DropDownList>
+                            <DropDownList
+                                fieldStyle={styles.listfield}
+                                title='Productiont'
+                                list={true}
+                                isOpen={openIndex === 3}
+                                onToggle={() =>
+                                    setOpenIndex(openIndex === 3 ? null : 3) // close others
+                                }
+                                waiting={projectInfo.order_level && true}
+                                checked={projectInfo.state >= 4}
+                            >
+                                <Production
+                                    state={projectInfo.state}
+                                    level={projectInfo.order_level}
+                                />
+                            </DropDownList>
+                            <DropDownList
+                                fieldStyle={styles.listfield}
+                                title='Livraison'
+                                list={true}
+                                isOpen={openIndex === 4}
+                                onToggle={() =>
+                                    setOpenIndex(openIndex === 4 ? null : 4) // close others
+                                }
+                                waiting={projectInfo.state >= 4}
+                                checked={projectInfo.state >= 7}
+
+                            >
+                                <Livraison
+                                    state={projectInfo.state}
+                                    level={projectInfo.order_level}
+                                />
+                            </DropDownList>
+
+                        </ScrollView>
+                    </SafeAreaView>
+                )
+            }
+        </>
     )
 }
 
@@ -134,4 +162,10 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
+    loading:{
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor:'white'
+    }
 })

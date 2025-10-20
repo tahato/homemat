@@ -7,7 +7,6 @@ export default function DropDownList({ children, title, fieldStyle, list, durati
     const anim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        
         // if (open && contentHeight) {
         Animated.timing(anim, {
             toValue: isOpen ? contentHeight : 0,
@@ -38,11 +37,11 @@ export default function DropDownList({ children, title, fieldStyle, list, durati
                 onPress={onToggle}
             >
                 <View style={styles.listTitle}>
-                    {waiting ?
+                    {checked ?
                         (
-                            <MaterialCommunityIcons name='clock-time-eight-outline' size={20} />
-                        ) : checked ? (
                             <FontAwesome5 name='check-circle' size={15} color={'green'} />
+                        ) : waiting ? (
+                            <MaterialCommunityIcons name='clock-time-eight-outline' size={20} color={'gray'}/>
                         ) :
                             < Fontisto name='locked' size={15} color={'lightgray'} />
                     }

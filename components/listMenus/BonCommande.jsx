@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DropDownList from '../DropDownList';
 
-export default function BonCommande() {
+export default function BonCommande({quotation_level,order_level,count_conceptions,gamme,ttc}) {
     const [contentHeight, setContentHeight] = useState(0)
     const [openIndex, setOpenIndex] = useState(null);
     const [data, setData] = useState([1, 2])
@@ -20,31 +20,33 @@ export default function BonCommande() {
                 onToggle={() =>
                     setOpenIndex(openIndex === 1 ? null : 1) // close others
                 }
+                waiting={(quotation_level==1 && !order_level)?true:false}
+                checked={order_level && true}
             >
                 <View onLayout={(e) => { setContentHeight(e.nativeEvent.layout.height) }} style={styles.menu}>
-                    {data.map((i) => (
-                        <View style={styles.datafield} key={i} >
+                  
+                        <View style={styles.datafield} >
                             <View>
                                 <Text style={{ fontWeight: 'bold' }}>Garde du corp Droit</Text>
-                                <Image></Image>
+                                {/* <Image></Image> */}
                             </View>
                             <View style={styles.detailsBetween}>
-                                <Text>Gamme excellence</Text>
+                                <Text>Gamme {gamme}</Text>
                                 <Text style={{ fontWeight: '300' }}>12m</Text>
                             </View>
                             <View style={styles.detailsBetween}>
-                                <Text>3400€</Text>
-                                <Text style={{ fontWeight: '300' }}>3 Conceptions</Text>
+                                <Text>{ttc} €</Text>
+                                <Text style={{ fontWeight: '300' }}>{count_conceptions} Conception(s)</Text>
                             </View>
 
                         </View>
-                    ))}
-                    <View>
+                  
+                    {/* <View>
 
                         <TouchableOpacity style={styles.btn}>
                             <Text style={{ color: '#ffffff', fontWeight: "semibold" }} > Envoyé au client</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
 
                 </View>
             </DropDownList>
@@ -52,12 +54,16 @@ export default function BonCommande() {
                 title='Envois au client'
                 fieldStyle={styles.listfield}
                 lsit={false}
+                waiting={(quotation_level==1 && !order_level)?true:false}
+                checked={order_level && true}
 
             />
             <DropDownList
                 title='Validation'
                 fieldStyle={styles.listfield}
                 lsit={false}
+                waiting={(quotation_level==1 && !order_level)?true:false}
+                checked={order_level && true}
             />
         </View>
     )
