@@ -6,7 +6,7 @@ import HomeInfoCard from '../components/HomeInfoCard';
 import SearchInput from '../components/SearchInput';
 import { useGlobalContext } from '../context/GlobaleProvider';
 
-export default function home() {
+export default function Home() {
     const [refreshing, setRefreshing] = useState(false);
     const [projects, setProjects] = useState([]);
     const { token } = useGlobalContext();
@@ -15,78 +15,75 @@ export default function home() {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState('');
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        setPage(1);
-        setProjects([])
-        fetchData();
-        setRefreshing(false);
-    }, []);
+    // ✅ Fetch projects
+    const fetchData = useCallback(async (reset = false) => {
+        if (loading || !token) return;
 
+        setLoading(true);
+        try {
+            const res = await axios.get(
+                `${process.env.EXPO_PUBLIC_API_URL}/api/homemat/projects`,
+                {
+                    params: {
+                        company_code: process.env.EXPO_PUBLIC_COMPANY_CODE,
+                        page: reset ? 1 : page,
+                        search: search || '',
+                    },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-    useEffect(() => {
-        fetchData();
-    }, [token])
-    useEffect(() => {
-        if (search) {
+            const { data, last_page } = res.data;
+            setLastPage(last_page);
 
-            const delay = setTimeout(() => {
-                setPage(1);
-                setProjects([]);
-                fetchData();
+            setProjects(prev =>
+                reset ? data : [...prev, ...data.filter(p => !prev.some(old => old.id === p.id))]
+            );
 
-            }, 500); // wait 0.5s after user stops typing
-
-            return () => clearTimeout(delay);
+            setPage(prev => (reset ? 2 : prev + 1));
+        } catch (err) {
+            console.log('Error fetching data:', err?.response?.status, err?.message);
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
         }
+    }, [page, token, search, loading]);
+
+    // ✅ Initial load
+    useEffect(() => {
+        if (token) fetchData(true);
+    }, [token]);
+
+    // ✅ Search effect (with delay)
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            if (token) fetchData(true);
+        }, 500);
+        return () => clearTimeout(delay);
     }, [search]);
 
-    const fetchData = async () => {
+    // ✅ Pull-to-refresh
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchData(true);
+    }, [fetchData]);
 
-        if (!loading) {
-            setLoading(true)
-            try {
-                const res = await axios
-                    .get(`${process.env.EXPO_PUBLIC_API_URL}/api/homemat/projects?company_code=${process.env.EXPO_PUBLIC_COMPANY_CODE}&page=${page}&search=${search}`,
-                        {
-                            headers: {
-                                "Authorization": `Bearer ${token}`,
-                            },
-                        }
-                    )
-                const lastPage = res.data.last_page;
-                setProjects((prev) => [...prev, ...res.data.data])
-                if (page <= lastPage) {
-                    setPage((prev) => prev + 1);
-                }
-                setLastPage(lastPage)
-                setLoading(false)
-                setRefreshing(false)
-
-            } catch (err) {
-                console.log("Error fetching data:", err?.response?.status, err?.message);
-
-            }
-        }
-
-    }
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1, paddingTop: 0 }} edges={['bottom', 'top']} >
-            <SearchInput
-                search={search}
-                setSearch={setSearch}
-            />
+        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }} edges={['top', 'bottom']}>
+            <SearchInput search={search} setSearch={setSearch} />
 
             <FlatList
                 style={styles.container}
                 contentContainerStyle={{ paddingBottom: 40, gap: 20 }}
                 data={projects}
+                keyExtractor={item => String(item.id)}
                 renderItem={({ item }) => <HomeInfoCard project={item} />}
-                keyExtractor={item => item.id}
                 onEndReached={() => {
-                    if (page <= lastPage) fetchData()
+                    if (!loading && page <= lastPage) fetchData();
                 }}
-                // onEndReachedThreshold={0.5}
+                onEndReachedThreshold={0.5}
                 refreshing={refreshing}
                 onRefresh={onRefresh}
                 ListFooterComponent={
@@ -96,7 +93,7 @@ export default function home() {
                 }
             />
         </SafeAreaView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -104,5 +101,4 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         paddingHorizontal: 15,
     },
-
-})
+});

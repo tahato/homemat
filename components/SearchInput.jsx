@@ -3,10 +3,6 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 export default function SearchInput({search,setSearch}) {
-  useEffect(() => {
-    console.log(search);
-
-  }, [search])
 
   return (
     <View style={styles.container}>
