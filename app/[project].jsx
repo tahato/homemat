@@ -87,9 +87,14 @@ export default function project() {
                                 <BonCommande
                                     quotation_level={projectInfo.quotation_level}
                                     order_level={projectInfo.order_level}
-                                    count_conceptions={projectInfo.count_conceptions}
-                                    gamme={projectInfo.gamme}
+                                    number={projectInfo.order_number}
+                                    conceptions={projectInfo.conceptions}
                                     ttc={projectInfo.quotation_ttc}
+                                    gameesQtt={{
+                                        excellence:projectInfo.excel_quantity,
+                                        elégance:projectInfo.eleg_quantity,
+                                        pro:projectInfo.pro_quantity}}
+                                 
                                 />
                             </DropDownList>
                             <DropDownList

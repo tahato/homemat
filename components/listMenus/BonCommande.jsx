@@ -1,13 +1,25 @@
-import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import DropDownList from '../DropDownList';
 
-export default function BonCommande({quotation_level,order_level,count_conceptions,gamme,ttc}) {
+export default function BonCommande({ quotation_level, order_level, number, conceptions, ttc, gameesQtt }) {
     const [contentHeight, setContentHeight] = useState(0)
     const [openIndex, setOpenIndex] = useState(null);
-    const [data, setData] = useState([1, 2])
+    const [gammes, setGamems] = useState([])
 
+    useEffect(() => {
+        const gammes = conceptions.reduce((acc, item) => {
+            if (!acc[item.gamme]) {
+                acc[item.gamme] = [];
+            }
+            item.qtt = gameesQtt[item.gamme]
+            acc[item.gamme].push(item)
+            return acc
+        },  [])
+        setGamems(gammes)
+    }, [])
 
+    console.log(gammes);
 
     return (
         <View>
@@ -20,27 +32,31 @@ export default function BonCommande({quotation_level,order_level,count_conceptio
                 onToggle={() =>
                     setOpenIndex(openIndex === 1 ? null : 1) // close others
                 }
-                waiting={(quotation_level==1 && !order_level)?true:false}
+                waiting={(quotation_level == 1 && !order_level) ? true : false}
                 checked={order_level && true}
             >
                 <View onLayout={(e) => { setContentHeight(e.nativeEvent.layout.height) }} style={styles.menu}>
-                  
-                        <View style={styles.datafield} >
-                            <View>
-                                <Text style={{ fontWeight: 'bold' }}>Garde du corp Droit</Text>
-                                {/* <Image></Image> */}
-                            </View>
-                            <View style={styles.detailsBetween}>
-                                <Text>Gamme {gamme}</Text>
-                                <Text style={{ fontWeight: '300' }}>12m</Text>
-                            </View>
-                            <View style={styles.detailsBetween}>
-                                <Text>{ttc} €</Text>
-                                <Text style={{ fontWeight: '300' }}>{count_conceptions} Conception(s)</Text>
-                            </View>
 
+                    <View style={styles.datafield} >
+                        <View>
+                            <Text style={{ fontWeight: 'bold' }}>Garde du corp Droit</Text>
+                            {/* <Image></Image> */}
                         </View>
-                  
+                        {
+                            gammes?.map((gamme) => (
+                                <View style={styles.detailsBetween}>
+                                    <Text>Gamme {order_level && gamme.gamme}</Text>
+                                    <Text style={{ fontWeight: '300' }}> {gamme.qtt} m</Text>
+                                </View>
+                            ))
+                        }
+                        <View style={styles.detailsBetween}>
+                            <Text>{order_level && ttc} €</Text>
+                            <Text style={{ fontWeight: '300' }}>{order_level && conceptions.length} Conception(s)</Text>
+                        </View>
+
+                    </View>
+
                     {/* <View>
 
                         <TouchableOpacity style={styles.btn}>
@@ -54,7 +70,7 @@ export default function BonCommande({quotation_level,order_level,count_conceptio
                 title='Envois au client'
                 fieldStyle={styles.listfield}
                 lsit={false}
-                waiting={(quotation_level==1 && !order_level)?true:false}
+                waiting={(quotation_level == 1 && !order_level) ? true : false}
                 checked={order_level && true}
 
             />
@@ -62,7 +78,7 @@ export default function BonCommande({quotation_level,order_level,count_conceptio
                 title='Validation'
                 fieldStyle={styles.listfield}
                 lsit={false}
-                waiting={(quotation_level==1 && !order_level)?true:false}
+                waiting={(quotation_level == 1 && !order_level) ? true : false}
                 checked={order_level && true}
             />
         </View>
