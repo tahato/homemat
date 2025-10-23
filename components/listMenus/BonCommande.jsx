@@ -5,21 +5,21 @@ import DropDownList from '../DropDownList';
 export default function BonCommande({ quotation_level, order_level, number, conceptions, ttc, gameesQtt }) {
     const [contentHeight, setContentHeight] = useState(0)
     const [openIndex, setOpenIndex] = useState(null);
-    const [gammes, setGamems] = useState([])
+    const [gammes, setGammes] = useState([])
 
     useEffect(() => {
-        const gammes = conceptions.reduce((acc, item) => {
+        
+        const gm = conceptions.reduce((acc, item) => {
             if (!acc[item.gamme]) {
                 acc[item.gamme] = [];
             }
             item.qtt = gameesQtt[item.gamme]
             acc[item.gamme].push(item)
             return acc
-        },  [])
-        setGamems(gammes)
+        }, conceptions)
+        setGammes(gm)
     }, [])
 
-    console.log(gammes);
 
     return (
         <View>
@@ -44,7 +44,7 @@ export default function BonCommande({ quotation_level, order_level, number, conc
                         </View>
                         {
                             gammes?.map((gamme) => (
-                                <View style={styles.detailsBetween}>
+                                <View style={styles.detailsBetween} key={gamme.id}>
                                     <Text>Gamme {order_level && gamme.gamme}</Text>
                                     <Text style={{ fontWeight: '300' }}> {gamme.qtt} m</Text>
                                 </View>
