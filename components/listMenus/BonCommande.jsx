@@ -8,18 +8,25 @@ export default function BonCommande({ quotation_level, order_level, number, conc
     const [gammes, setGammes] = useState([])
 
     useEffect(() => {
-        
-        const gm = conceptions.reduce((acc, item) => {
-            if (!acc[item.gamme]) {
-                acc[item.gamme] = [];
-            }
-            item.qtt = gameesQtt[item.gamme]
-            acc[item.gamme].push(item)
-            return acc
-        }, conceptions)
-        setGammes(gm)
-    }, [])
+  const grouped = conceptions.reduce((acc, item) => {
+    if (!acc[item.gamme]) {
+      acc[item.gamme] = [];
+    }
+        acc[item.gamme].push(item);
+    return acc;
+  }, {});
 
+  // ✅ Convert object into an array
+  const gammes = Object.keys(grouped).map(key => ({
+    gamme: key,
+    conceptions: grouped[key],
+    qtt : gameesQtt[key],
+  }));
+
+  setGammes(gammes);
+}, [conceptions, gameesQtt]);
+
+console.log(gammes);
 
     return (
         <View>
@@ -44,7 +51,7 @@ export default function BonCommande({ quotation_level, order_level, number, conc
                         </View>
                         {
                             gammes?.map((gamme) => (
-                                <View style={styles.detailsBetween} key={gamme.id}>
+                                <View style={styles.detailsBetween} key={gamme.conceptions[0].id}>
                                     <Text>Gamme {order_level && gamme.gamme}</Text>
                                     <Text style={{ fontWeight: '300' }}> {gamme.qtt} m</Text>
                                 </View>
