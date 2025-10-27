@@ -1,65 +1,65 @@
-import { getItem } from "@/tools/AsyncStorage";
-import { Ionicons } from "@expo/vector-icons";
-import { router, Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Logout from '../components/Logout';
-import images from '../constants/images';
-import HeaderProject from '../components/HeaderProject';
-import GlobalProvider from '../context/GlobaleProvider';
-
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { Image, StyleSheet, Text, View } from "react-native";
+import "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
+import HeaderProject from "../components/HeaderProject";
+import Logout from "../components/Logout";
+import images from "../constants/images";
+import GlobalProvider from "../context/GlobaleProvider";
 
 export default function RootLayout() {
-
-    return (
-
+  return (
     <GlobalProvider>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
-         <Stack.Screen name="home" options={{ 
-          headerTitle:'',
-          header:({ navigation }) => (
-              <SafeAreaView edges={['top']}>
+        {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+        {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerTitle: "",
+            header: ({ navigation }) => (
+              <SafeAreaView edges={["top"]}>
                 <View style={styles.headerLeftContainer}>
-                  <Image source={images.logo} style={{width:50,height:50}}/>
-                  <View style={{alignItems:"center"}}>
-                  <Text style={{color:"white"}} > Bienvenu</Text>
-                  <Text style={{color:"white"}} > Terry Martin le bonoit allegro</Text>
+                  <Image
+                    source={images.logo}
+                    style={{ width: 50, height: 50 }}
+                  />
+                  <View style={{ alignItems: "center" }}>
+                    <Text style={{ color: "white" }}> Bienvenu</Text>
+                    <Text style={{ color: "white" }}>
+                      {" "}
+                      Terry Martin le bonoit allegro
+                    </Text>
                   </View>
-          <Logout/>
+                  <Logout />
                 </View>
               </SafeAreaView>
             ),
+          }}
+        />
+        <Stack.Screen
+          name="[project]"
+          options={{
+            headerTitle: "",
+            header: ({ navigation }) => <HeaderProject />,
+          }}
+        />
 
-        }} />
-        <Stack.Screen name="[project]" options={{ 
-            headerTitle:'',
-                  header:({ navigation }) => (
-                    <HeaderProject />
-                    ),
-
-        }} />
-       
-
-        
         {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
       </Stack>
       <StatusBar style="auto" />
     </GlobalProvider>
-
   );
 }
 const styles = StyleSheet.create({
   headerLeftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor:'#293846',
-    padding: 10
+    backgroundColor: "#293846",
+    padding: 10,
   },
-})
+});

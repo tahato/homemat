@@ -2,9 +2,9 @@ import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import HomeInfoCard from '../components/HomeInfoCard';
-import SearchInput from '../components/SearchInput';
-import { useGlobalContext } from '../context/GlobaleProvider';
+import HomeInfoCard from '../../components/HomeInfoCard';
+import SearchInput from '../../components/SearchInput';
+import { useGlobalContext } from '../../context/GlobaleProvider';
 
 export default function Home() {
     const [refreshing, setRefreshing] = useState(false);
@@ -71,7 +71,7 @@ export default function Home() {
     }, [fetchData]);
 
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }} edges={['top', 'bottom']}>
+        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }} edges={['top']}>
             <SearchInput search={search} setSearch={setSearch} />
 
             <FlatList
