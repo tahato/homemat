@@ -55,7 +55,7 @@ export default function threeD() {
         >
           <ActivityIndicator size="large" color="#007bff" />
         </View>
-      ) : (
+      ) : project.bill_id ? (
         <View style={{ display: "flex", flex: 1, position: "relative" }}>
           <View style={styles.dropdownContainer}>
             <Dropdown
@@ -92,6 +92,7 @@ export default function threeD() {
               }}
             />
           </View>
+
           <WebView
             source={{
               uri: `http://192.168.100.25:8000/homemat/view3d/${appId}/${project?.bill_id}/${value}`,
@@ -99,6 +100,17 @@ export default function threeD() {
             }}
             style={{ flex: 1, position: "relative" }}
           />
+        </View>
+      ) : (
+        <View
+          style={{
+            display: "flex",
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text>Aucune conception trouvée</Text>
         </View>
       )}
     </>
