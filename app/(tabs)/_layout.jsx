@@ -9,7 +9,7 @@ export default function RootLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "skyblue",
+        tabBarActiveTintColor: "#1C84C6",
         tabBarShowLabel: false,
         tabBarItemStyle: {
           //   height: "100%",
@@ -35,7 +35,7 @@ export default function RootLayout() {
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="home" color={color} />
-          )
+          ),
         }}
       />
       <Tabs.Screen
@@ -44,7 +44,7 @@ export default function RootLayout() {
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="bar-chart" color={color} />
-          )
+          ),
         }}
       />
     </Tabs>
