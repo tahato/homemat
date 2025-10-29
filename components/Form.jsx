@@ -19,7 +19,6 @@ export default function Form() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { setUserName, setAppId, setToken } = useGlobalContext();
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   const handleLogin = async () => {
@@ -44,8 +43,7 @@ export default function Form() {
           setItem("token", res.data.access_token);
           setItem("userName", res.data.admin.name);
           setItem("appId", res.data.company_id);
-          setToken(res.data.access_token);
-
+          console.log("idddddddd", res.data.company_id);
           router.replace("./home");
         })
         .catch((err) => {

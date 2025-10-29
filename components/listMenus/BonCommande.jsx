@@ -35,7 +35,7 @@ export default function BonCommande({
     }
   }, [conceptions, gameesQtt]);
 
-  console.log(gammes);
+  console.log('gammes',gammes);
 
   return (
     <View>
