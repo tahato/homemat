@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
 import {
@@ -9,46 +8,36 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getProject } from "../../api/getProject";
 import DropDownList from "../../components/DropDownList";
 import BonCommande from "../../components/listMenus/BonCommande";
 import Estimation from "../../components/listMenus/Estimation";
 import Livraison from "../../components/listMenus/Livraison";
 import Production from "../../components/listMenus/Production";
-import { getItem } from "../../tools/AsyncStorage";
-
+import {useGlobalContext} from "../../context/GlobaleProvider"
 export default function project() {
   const { project } = useLocalSearchParams();
   const id = parseInt(project);
   const [openIndex, setOpenIndex] = useState(null);
   const [projectInfo, setProjectInfo] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {setProjectId}=useGlobalContext()
+
   useFocusEffect(
     useCallback(() => {
-      getProject();
+      setProjectId(id)
+      fetchData();
     }, [])
   );
-  const getProject = async () => {
-    const token = await getItem("token");
-    await axios
-      .post(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/homemat/projectById?company_code=${process.env.EXPO_PUBLIC_COMPANY_CODE}`,
-        { id },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        setProjectInfo(res.data.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setLoading(false);
-      });
+  const fetchData = async () => {
+    try {
+      const data = await getProject(id);
+      setProjectInfo(data);
+      setLoading(false);
+    } catch (e) {
+      console.log("error get project", e);
+    }
   };
-
   return (
     <>
       {loading ? (

@@ -6,6 +6,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 const GlobalProvider = ({ children }) => {
   const [billId, setBillId] = useState(null);
   const [projectName, setProjectName] = useState("");
+  const [projectId, setProjectId] = useState("");
 
   return (
     <GlobalContext.Provider
@@ -14,6 +15,8 @@ const GlobalProvider = ({ children }) => {
         setBillId,
         projectName,
         setProjectName,
+        projectId,
+        setProjectId,
       }}
     >
       {children}
