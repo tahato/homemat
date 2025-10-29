@@ -15,7 +15,6 @@ export default function threeD() {
   const { projectId } = useGlobalContext();
   const [isFocus, setIsFocus] = useState(false);
   const [value, setValue] = useState(0);
-  const [url, setUrl] = useState("");
 
   useFocusEffect(
     useCallback(() => {
