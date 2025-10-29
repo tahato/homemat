@@ -5,61 +5,71 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeInfoCard from '../../components/HomeInfoCard';
 import SearchInput from '../../components/SearchInput';
 import { useGlobalContext } from '../../context/GlobaleProvider';
+import { getItem } from '../../tools/AsyncStorage';
 
 export default function Home() {
     const [refreshing, setRefreshing] = useState(false);
     const [projects, setProjects] = useState([]);
-    const { token } = useGlobalContext();
     const [lastPage, setLastPage] = useState(1);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState('');
-
+    const [token,setToken]=useState();
     // ✅ Fetch projects
     const fetchData = useCallback(async (reset = false) => {
-        if (loading || !token) return;
+      const token = await getItem("token");
+      setToken(token)
+      if (loading || !token) return;
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `${process.env.EXPO_PUBLIC_API_URL}/api/homemat/projects`,
+          {
+            params: {
+              company_code: process.env.EXPO_PUBLIC_COMPANY_CODE,
+              page: reset ? 1 : page,
+              search: search || "",
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-        setLoading(true);
-        try {
-            const res = await axios.get(
-                `${process.env.EXPO_PUBLIC_API_URL}/api/homemat/projects`,
-                {
-                    params: {
-                        company_code: process.env.EXPO_PUBLIC_COMPANY_CODE,
-                        page: reset ? 1 : page,
-                        search: search || '',
-                    },
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+        const { data, last_page } = res.data;
+        setLastPage(last_page);
 
-            const { data, last_page } = res.data;
-            setLastPage(last_page);
+        setProjects((prev) =>
+          reset
+            ? data
+            : [
+                ...prev,
+                ...data.filter((p) => !prev.some((old) => old.id === p.id)),
+              ]
+        );
 
-            setProjects(prev =>
-                reset ? data : [...prev, ...data.filter(p => !prev.some(old => old.id === p.id))]
-            );
-
-            setPage(prev => (reset ? 2 : prev + 1));
-        } catch (err) {
-            console.log('Error fetching data:', err?.response?.status, err?.message);
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
+        setPage((prev) => (reset ? 2 : prev + 1));
+      } catch (err) {
+        console.log(
+          "Error fetching data:",
+          err?.response?.status,
+          err?.message
+        );
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
     }, [page, token, search, loading]);
 
     // ✅ Initial load
     useEffect(() => {
-        if (token) fetchData(true);
+         fetchData(true);
     }, [token]);
 
     // ✅ Search effect (with delay)
     useEffect(() => {
         const delay = setTimeout(() => {
-            if (token) fetchData(true);
+    fetchData(true);
         }, 500);
         return () => clearTimeout(delay);
     }, [search]);

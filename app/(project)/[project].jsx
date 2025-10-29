@@ -3,12 +3,12 @@ import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import DropDownList from '../components/DropDownList'
-import BonCommande from '../components/listMenus/BonCommande'
-import Estimation from '../components/listMenus/Estimation'
-import Livraison from '../components/listMenus/Livraison'
-import Production from '../components/listMenus/Production'
-import { useGlobalContext } from '../context/GlobaleProvider'
+import DropDownList from '../../components/DropDownList'
+import BonCommande from '../../components/listMenus/BonCommande'
+import Estimation from '../../components/listMenus/Estimation'
+import Livraison from '../../components/listMenus/Livraison'
+import Production from '../../components/listMenus/Production'
+import { useGlobalContext } from '../../context/GlobaleProvider'
 
 export default function project() {
     const { project } = useLocalSearchParams();
@@ -22,6 +22,7 @@ export default function project() {
     }, [])
 
     const getProject = async () => {
+        
         await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/api/homemat/projectById?company_code=${process.env.EXPO_PUBLIC_COMPANY_CODE}`,
             { id },
             {

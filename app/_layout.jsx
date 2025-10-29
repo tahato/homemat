@@ -3,10 +3,12 @@ import { StatusBar } from "expo-status-bar";
 import { Image, StyleSheet, Text, View } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import HeaderProject from "../components/HeaderProject";
+import HeaderProject from "../components/headers/HeaderProject";
 import Logout from "../components/Logout";
 import images from "../constants/images";
 import GlobalProvider from "../context/GlobaleProvider";
+import Mainheader from "../components/headers/Mainheader"
+
 
 export default function RootLayout() {
   return (
@@ -20,33 +22,41 @@ export default function RootLayout() {
           name="(tabs)"
           options={{
             headerTitle: "",
-            header: ({ navigation }) => (
-              <SafeAreaView edges={["top"]}>
-                <View style={styles.headerLeftContainer}>
-                  <Image
-                    source={images.logo}
-                    style={{ width: 50, height: 50 }}
-                  />
-                  <View style={{ alignItems: "center" }}>
-                    <Text style={{ color: "white" }}> Bienvenu</Text>
-                    <Text style={{ color: "white" }}>
-                      {" "}
-                      Terry Martin le bonoit allegro
-                    </Text>
-                  </View>
-                  <Logout />
-                </View>
-              </SafeAreaView>
+            header: () => (
+              <Mainheader />
+              // <SafeAreaView edges={["top"]}>
+              //   <View style={styles.headerLeftContainer}>
+              //     <Image
+              //       source={images.logo}
+              //       style={{ width: 50, height: 50 }}
+              //     />
+              //     <View style={{ alignItems: "center" }}>
+              //       <Text style={{ color: "white" }}> Bienvenu</Text>
+              //       <Text style={{ color: "white" }}>
+              //         {" "}
+              //         Terry Martin le bonoit allegro
+              //       </Text>
+              //     </View>
+              //     <Logout />
+              //   </View>
+              // </SafeAreaView>
             ),
           }}
         />
         <Stack.Screen
-          name="[project]"
+          name="(project)"
           options={{
             headerTitle: "",
             header: ({ navigation }) => <HeaderProject />,
           }}
         />
+        {/* <Stack.Screen
+          name="[project]"
+          options={{
+            headerTitle: "",
+            header: ({ navigation }) => <HeaderProject />,
+          }}
+        /> */}
 
         {/* <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} /> */}
       </Stack>
