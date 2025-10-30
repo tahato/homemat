@@ -23,19 +23,17 @@ export default function BonCommande({
         acc[item.gamme].push(item);
         return acc;
       }, {});
-      
+
       // ✅ Convert object into an array
       const gammes = Object.keys(grouped).map((key) => ({
-          gamme: key,
-          conceptions: grouped[key],
-          qtt: gameesQtt[key],
-        }));
-        
-        setGammes(gammes);
+        gamme: key,
+        conceptions: grouped[key],
+        qtt: gameesQtt[key],
+      }));
+
+      setGammes(gammes);
     }
   }, [conceptions, gameesQtt]);
-
-  console.log('gammes',gammes);
 
   return (
     <View>

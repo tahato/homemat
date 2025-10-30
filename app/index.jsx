@@ -5,7 +5,8 @@ import { getItem } from "../tools/AsyncStorage";
 export default function index() {
   const getToken = async () => {
     const token = await getItem("token");
-    router.replace(!!token ? "/home" : "/login");
+    // router.replace(!!token ? "/home" : "/login");
+    router.replace(!!token ? "/dashboard" : "/login");
   };
   useEffect(() => {
     getToken();

@@ -21,14 +21,11 @@ export default function threeD() {
       fetchData();
     }, [value])
   );
-  const getLocalData = async () => {
-    const id = await getItem("appId");
-    setAppId(id);
-  };
   const fetchData = async () => {
     try {
-      getLocalData();
-      const data = await getProject(projectId);
+      const id = await getItem("appId");
+      setAppId(id);
+      const data = await getProject (projectId);
       setProject(data);
       const list = data.conceptions.map((item, index) => ({
         label: `Conceptin N° ${index + 1}`,
@@ -94,10 +91,15 @@ export default function threeD() {
 
           <WebView
             source={{
-              uri: `http://192.168.100.25:8000/homemat/view3d/${appId}/${project?.bill_id}/${value}`,
-              // uri: "https://homemattest.scriptdzshock.com/homemat/view3d/2/146/0",
+              uri: `http://192.168.100.25:8000/homemat/view3d/2/4/0`,
             }}
             style={{ flex: 1, position: "relative" }}
+            cacheEnabled={true}
+            cacheMode="LOAD_CACHE_ELSE_NETWORK"
+            startInLoadingState={true}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            allowsFullscreenVideo
           />
         </View>
       ) : (
@@ -112,6 +114,20 @@ export default function threeD() {
           <Text>Aucune conception trouvée</Text>
         </View>
       )}
+      {/* <WebView
+        source={{
+          uri: `http://192.168.100.25:8000/homemat/view3d/${appId}/${project?.bill_id}/${value}`,
+          // uri: "http://192.168.100.25:8000/homemat/view3d/2/4/0",
+          // uri: "https://homemattest.scriptdzshock.com/homemat/view3d/2/146/0",
+        }}
+        style={{ flex: 1, position: "relative" }}
+        cacheEnabled={true}
+        cacheMode="LOAD_CACHE_ELSE_NETWORK"
+        startInLoadingState={true}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        allowsFullscreenVideo
+      /> */}
     </>
   );
 }

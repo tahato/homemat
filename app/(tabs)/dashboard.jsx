@@ -1,10 +1,31 @@
+import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import Svg, { Circle } from "react-native-svg";
+import { getDashboard } from "../../api/getDashboard";
 export default function dashboard() {
-  let percentDevis = 20;
-  let percentCommandes = 50;
-  let percentProd = 30;
+  const [loading, setLoading] = useState();
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const data = await getDashboard();
+      setData(data);
+      setLoading(false);
+    } catch (e) {
+      console.log("error get project", e);
+    }
+  };
+
+  let percentDevis = (data.devis * 100) / data.total_projects;
+  let percentCommandes = (data.commandes * 100) / data.total_projects;
+  let percentProd =
+    ((data.total_projects - data.devis - data.commandes) * 100) /
+    data.total_projects;
   const { width, height } = Dimensions.get("window");
   const radius = 50;
   const strokeWidth = 5;
@@ -16,11 +37,15 @@ export default function dashboard() {
   const strokeDashoffsetProd =
     circumference -
     (circumference * (percentDevis + percentCommandes + percentProd)) / 200;
-  const data = {
+  const formedData = {
     labels: ["Devis", "Commandes", "En Production"],
     datasets: [
       {
-        data: [20, 50, 30],
+        data: [
+          data.devis,
+          data.commandes,
+          data.total_projects - data.devis - data.commandes,
+        ],
         colors: [
           (opacity = 1) => `rgba(217, 217, 217, ${opacity})`, // red
           (opacity = 1) => `rgba(255, 116, 74, ${opacity})`, // blue
@@ -33,23 +58,23 @@ export default function dashboard() {
     {
       id: 1,
       name: "Devis",
-      qtt: "255",
-      montant: 25897.55,
-      percent: 30,
+      qtt: data.devis,
+      montant: data.devis_ttc,
+      percent: percentDevis,
     },
     {
       id: 2,
       name: "Commandes",
       qtt: "354",
-      montant: 84525.55,
-      percent: 50,
+      montant: data.commandes_ttc,
+      percent: percentCommandes,
     },
     {
       id: 3,
       name: "En Productions",
       qtt: "120",
       montant: 387892.55,
-      percent: 20,
+      percent: percentProd,
     },
   ];
 
@@ -69,10 +94,10 @@ export default function dashboard() {
       <ScrollView
         contentContainerStyle={{
           backgroundColor: "white",
-          justifyContent:"space-between",
+          justifyContent: "space-between",
           alignItems: "center",
-          flexGrow:1,
-          padding:20
+          flexGrow: 1,
+          padding: 20,
         }}
       >
         <Svg
@@ -122,7 +147,7 @@ export default function dashboard() {
             origin="55,50"
           />
         </Svg>
-        <Text style={{ position: "absolute", top: 120 }}>675 projets </Text>
+        <Text style={{ position: "absolute", top: 120 }}>{data.total_projects} projets </Text>
         {/* <Text
             style={{
               textAlign: "center",
@@ -136,11 +161,10 @@ export default function dashboard() {
 
         <BarChart
           style={{
-          
             borderRadius: 16,
           }}
-          data={data}
-          width={width-10}
+          data={formedData}
+          width={width - 10}
           height={300}
           yAxisLabel="%"
           chartConfig={chartConfig}

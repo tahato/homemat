@@ -4,29 +4,33 @@ import { StyleSheet } from "react-native";
 import "react-native-reanimated";
 
 import { FontAwesome } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function RootLayout() {
+  const bottomInset = useSafeAreaInsets().bottom;
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "#1C84C6",
         tabBarShowLabel: false,
         tabBarItemStyle: {
-          //   height: "100%",
+          height: "100%",
           display: "flex",
+          flex: 1,
           justifyContent: "center",
           alignItems: "center",
           paddingTop: 10,
-          paddingRight: 10,
+          // paddingRight: 10,
         },
         tabBarStyle: {
-          height: 70,
-          //   marginBottom: bottomInset,
+          height: 50,
+          marginBottom: bottomInset,
+          elevation: 0, // remove shadow on Android
+          shadowOpacity: 0, // remove shadow on iOS
+          borderTopWidth: 0, // remove top border line
         },
-        // tabBarActiveTintColor: colors.white,
-        // tabBarInactiveTintColor: colors.avenirBige,
-        // tabBarLabelStyle: styles.tabBarLabel,
-        // tabBarLabelPosition: "below-icon",
+        tabBarInactiveTintColor: "lightgray",
       }}
     >
       <Tabs.Screen
@@ -50,12 +54,4 @@ export default function RootLayout() {
     </Tabs>
   );
 }
-const styles = StyleSheet.create({
-  headerLeftContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#293846",
-    padding: 10,
-  },
-});
+const styles = StyleSheet.create({});

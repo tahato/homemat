@@ -13,17 +13,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-export default function DropDownList({
-  children,
-  title,
-  fieldStyle,
-  list,
-  duration,
-  onToggle,
-  isOpen,
-  waiting = false,
-  checked = false,
-}) {
+export default function DropDownList({children,title,fieldStyle,list,duration,onToggle,isOpen,waiting = false,checked = false,})
+{
   const [open, setOpen] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const anim = useRef(new Animated.Value(0)).current;
