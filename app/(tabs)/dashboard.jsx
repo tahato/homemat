@@ -1,16 +1,29 @@
-import { useEffect, useState } from "react";
-import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  Easing,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import Svg, { Circle } from "react-native-svg";
 import { getDashboard } from "../../api/getDashboard";
 export default function dashboard() {
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [bills, setBills] = useState([]);
+  const { width, height } = Dimensions.get("window");
+  const radius = 50;
+  const strokeWidth = 5;
+  const circumference = 2 * Math.PI * radius;
+  const prodAnim = useRef(new Animated.Value(circumference)).current;
+  const commandesAnim = useRef(new Animated.Value(circumference)).current;
+  const devisAnim = useRef(new Animated.Value(circumference)).current;
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  
   const fetchData = async () => {
     try {
       const data = await getDashboard();
@@ -21,22 +34,66 @@ export default function dashboard() {
     }
   };
 
-  let percentDevis = (data.devis * 100) / data.total_projects;
-  let percentCommandes = (data.commandes * 100) / data.total_projects;
-  let percentProd =
-    ((data.total_projects - data.devis - data.commandes) * 100) /
-    data.total_projects;
-  const { width, height } = Dimensions.get("window");
-  const radius = 50;
-  const strokeWidth = 5;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffsetDevis =
-    circumference - (circumference * percentDevis) / 200;
-  const strokeDashoffsetcommandes =
-    circumference - (circumference * (percentDevis + percentCommandes)) / 200;
-  const strokeDashoffsetProd =
-    circumference -
-    (circumference * (percentDevis + percentCommandes + percentProd)) / 200;
+  const animateCircle = (animValue, targetPercent, delay = 0) => {
+    const toValue = targetPercent;
+    Animated.timing(animValue, {
+      toValue,
+      duration:1000,
+      delay,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start();
+  };
+  // Fetch data on mount
+  useEffect(() => {
+    fetchData();
+  }, []);
+  // Animate when data changes
+  useEffect(() => {
+    if (!data.total_projects) return;
+    let percentDevis = (data.devis * 100) / data.total_projects;
+    let percentCommandes = (data.commandes * 100) / data.total_projects;
+    let percentProd =
+      ((data.total_projects - data.devis - data.commandes) * 100) /
+      data.total_projects;
+    
+    const strokeDashoffsetDevis =
+      circumference - (circumference * percentDevis) / 200;
+    const strokeDashoffsetcommandes =
+      circumference - (circumference * (percentDevis + percentCommandes)) / 200;
+    const strokeDashoffsetProd =
+      circumference -
+      (circumference * (percentDevis + percentCommandes + percentProd)) / 200;
+    animateCircle(prodAnim, strokeDashoffsetProd, 400);
+    animateCircle(commandesAnim, strokeDashoffsetcommandes, 200);
+    animateCircle(devisAnim, strokeDashoffsetDevis, 0);
+
+     const bills = [
+       {
+         id: 1,
+         name: "Devis",
+         qtt: data.devis,
+         montant: data.devis_ttc,
+         percent: percentDevis,
+       },
+       {
+         id: 2,
+         name: "Commandes",
+         qtt: "354",
+         montant: data.commandes_ttc,
+         percent: percentCommandes,
+       },
+       {
+         id: 3,
+         name: "En Productions",
+         qtt: "120",
+         montant: 387892.55,
+         percent: percentProd,
+       },
+     ];
+setBills(bills)
+  }, [data]);
+
   const formedData = {
     labels: ["Devis", "Commandes", "En Production"],
     datasets: [
@@ -54,30 +111,7 @@ export default function dashboard() {
       },
     ],
   };
-  const bills = [
-    {
-      id: 1,
-      name: "Devis",
-      qtt: data.devis,
-      montant: data.devis_ttc,
-      percent: percentDevis,
-    },
-    {
-      id: 2,
-      name: "Commandes",
-      qtt: "354",
-      montant: data.commandes_ttc,
-      percent: percentCommandes,
-    },
-    {
-      id: 3,
-      name: "En Productions",
-      qtt: "120",
-      montant: 387892.55,
-      percent: percentProd,
-    },
-  ];
-
+ 
   const chartConfig = {
     backgroundColor: "#1cc910",
     backgroundGradientFrom: "#ffffff",
@@ -89,6 +123,7 @@ export default function dashboard() {
     },
   };
 
+  const AnimatedCircle = Animated.createAnimatedComponent(Circle);
   return (
     <>
       <ScrollView
@@ -106,7 +141,7 @@ export default function dashboard() {
           viewBox="0 30 120 40"
           style={{ position: "relative" }}
         >
-          <Circle
+          <AnimatedCircle
             cx="50"
             cy="0"
             r={radius}
@@ -114,13 +149,13 @@ export default function dashboard() {
             strokeWidth={strokeWidth}
             fill="none"
             strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffsetProd}
+            strokeDashoffset={prodAnim}
             strokeLinecap="butt"
-            rotation="180"
+            rotation="-180"
             origin="55,50"
           />
 
-          <Circle
+          <AnimatedCircle
             cx="50"
             cy="0"
             r={radius}
@@ -128,12 +163,12 @@ export default function dashboard() {
             strokeWidth={strokeWidth}
             fill="none"
             strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffsetcommandes}
+            strokeDashoffset={commandesAnim}
             strokeLinecap="butt"
-            rotation="180"
+            rotation="-180"
             origin="55,50"
           />
-          <Circle
+          <AnimatedCircle
             cx="50"
             cy="0"
             r={radius}
@@ -141,13 +176,15 @@ export default function dashboard() {
             strokeWidth={strokeWidth}
             fill="none"
             strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffsetDevis}
+            strokeDashoffset={devisAnim}
             strokeLinecap="butt"
-            rotation="180"
+            rotation="-180"
             origin="55,50"
           />
         </Svg>
-        <Text style={{ position: "absolute", top: 120 }}>{data.total_projects} projets </Text>
+        <Text style={{ position: "absolute", top: 120 }}>
+          {data.total_projects} projets{" "}
+        </Text>
         {/* <Text
             style={{
               textAlign: "center",
