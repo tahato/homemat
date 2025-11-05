@@ -91,7 +91,7 @@ export default function threeD() {
 
           <WebView
             source={{
-              uri: `http://192.168.100.25:8000/homemat/view3d/2/4/0`,
+              uri: `${process.env.EXPO_PUBLIC_API_URL}/homemat/view3d/${appId}/${project?.bill_id}/${value}`,
             }}
             style={{ flex: 1, position: "relative" }}
             cacheEnabled={true}
