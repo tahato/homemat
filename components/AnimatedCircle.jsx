@@ -1,46 +1,55 @@
-import { useEffect, useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import { Animated, Easing } from "react-native";
 import { Circle } from "react-native-svg";
+import { useFocusEffect } from "expo-router";
 
+// Animated SVG circle component
 const AnimatedSvgCircle = Animated.createAnimatedComponent(Circle);
 
 export default function AnimatedCircle({
-  percent = 0,
-  radius = 50,
-  strokeWidth = 5,
-  color = "#000",
+  radius,
+  strokeWidth,
+  strokeColor,
+  percent,
   delay = 0,
   duration = 1000,
-  rotation = 180,
-  origin = "55,50",
 }) {
   const circumference = 2 * Math.PI * radius;
-  const anim = useRef(new Animated.Value(circumference)).current;
+  const animValue = useRef(new Animated.Value(circumference)).current;
 
-  useEffect(() => {
-    const offset = circumference - (circumference * percent) / 100;
+  useFocusEffect(
+    useCallback(() => {
+      // When the tab gains focus → restart animation
+      const offset = circumference - (circumference * percent) / 200;
 
-    Animated.timing(anim, {
-      toValue: offset,
-      duration,
-      delay,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: false,
-    }).start();
-  }, [percent]);
+      Animated.timing(animValue, {
+        toValue: offset,
+        duration,
+        delay,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: false,
+      }).start();
+
+      // Optional: reset when unfocused (so it replays next time)
+      return () => {
+        animValue.setValue(circumference);
+        
+      };
+    }, [percent])
+  );
 
   return (
     <AnimatedSvgCircle
       cx="50"
       cy="0"
       r={radius}
-      stroke={color}
+      stroke={strokeColor}
       strokeWidth={strokeWidth}
       fill="none"
       strokeDasharray={circumference}
-      strokeDashoffset={anim}
-      rotation={rotation}
-      origin={origin}
+      strokeDashoffset={animValue}
+      rotation="180"
+      origin="55,50"
     />
   );
 }

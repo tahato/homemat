@@ -1,17 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Easing,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { BarChart } from "react-native-chart-kit";
-import Svg, { Circle } from "react-native-svg";
+import { useCallback, useEffect, useState } from "react";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useFocusEffect } from "expo-router";
+import Svg from "react-native-svg";
 import { getDashboard } from "../../api/getDashboard";
 import AnimatedBarChart from "../../components/AnimatedBarChart";
+import AnimatedCircle from "../../components/AnimatedCircle";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -20,14 +13,8 @@ export default function Dashboard() {
   const { width } = Dimensions.get("window");
   const radius = 50;
   const strokeWidth = 5;
-  const circumference = 2 * Math.PI * radius;
 
-  // Animated values start from hidden state
-  const prodAnim = useRef(new Animated.Value(circumference)).current;
-  const commandesAnim = useRef(new Animated.Value(circumference)).current;
-  const devisAnim = useRef(new Animated.Value(circumference)).current;
-
-  // Fetch data on mount
+  // Fetch data
   useEffect(() => {
     fetchData();
   }, []);
@@ -42,66 +29,22 @@ export default function Dashboard() {
     }
   };
 
-  // Animate when data changes
-  useEffect(() => {
-    if (!data.total_projects) return;
-
-    let percentDevis = (data.devis * 100) / data.total_projects;
-    let percentCommandes = (data.commandes * 100) / data.total_projects;
-    let percentProd = (data.prod * 100) / data.total_projects;
-
-    const offsetDevis = circumference - (circumference * percentDevis) / 200;
-    const offsetCommandes =
-      circumference - (circumference * (percentDevis + percentCommandes)) / 200;
-    const offsetProd =
-      circumference -
-      (circumference * (percentDevis + percentCommandes + percentProd)) / 200;
-
-    const animateCircle = (animValue, toValue) => {
-      Animated.timing(animValue, {
-        toValue,
-        duration: 1000,
-        easing: Easing.out(Easing.cubic),
-        useNativeDriver: false,
-      }).start();
-    };
-
-    animateCircle(prodAnim, offsetProd);
-    animateCircle(commandesAnim, offsetCommandes);
-    animateCircle(devisAnim, offsetDevis);
-  }, [data]);
-
-  const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-
-  if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-        }}
-      >
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
   // Bar chart
   const formedData = {
-    labels: ["Devis", "Commandes", "En Production"],
+    labels: ["Devis", "Cmd", "Prod",""],
     datasets: [
       {
         data: [
-          data.devis,
-          data.commandes,
-          data.total_projects - data.devis - data.commandes,
+          ((data.devis * 100) / data.total_projects).toFixed(1),
+          ((data.commandes * 100) / data.total_projects).toFixed(1),
+          ((data.prod * 100) / data.total_projects).toFixed(1),
+          100,
         ],
         colors: [
           (opacity = 1) => `rgba(217, 217, 217, ${opacity})`,
           (opacity = 1) => `rgba(255, 116, 74, ${opacity})`,
           (opacity = 1) => `rgba(26, 179, 148, ${opacity})`,
+          (opacity = 1) => `rgba(255,255, 255, 0)`,
         ],
       },
     ],
@@ -121,6 +64,7 @@ export default function Dashboard() {
       qtt: data.devis,
       montant: data.devis_ttc,
       percent: ((data.devis * 100) / data.total_projects).toFixed(1),
+      color: "#D9D9D9",
     },
     {
       id: 2,
@@ -128,6 +72,7 @@ export default function Dashboard() {
       qtt: data.commandes,
       montant: data.commandes_ttc,
       percent: ((data.commandes * 100) / data.total_projects).toFixed(1),
+      color: "#FF744A",
     },
     {
       id: 3,
@@ -135,6 +80,7 @@ export default function Dashboard() {
       qtt: data.prod,
       montant: data.prod_ttc ?? 0,
       percent: ((data.prod * 100) / data.total_projects).toFixed(1),
+      color: "#1AB394",
     },
   ];
 
@@ -148,6 +94,7 @@ export default function Dashboard() {
         padding: 20,
       }}
     >
+      {/* Animated Circles */}
       <Svg
         width={220}
         height={140}
@@ -155,60 +102,41 @@ export default function Dashboard() {
         style={{ position: "relative" }}
       >
         <AnimatedCircle
-          cx="50"
-          cy="0"
-          r={radius}
-          stroke="#1AB394"
+          radius={radius}
           strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={circumference}
-          strokeDashoffset={prodAnim}
-          rotation="180"
-          origin="55,50"
+          strokeColor="#1AB394"
+          percent={
+            (data.prod * 100 + data.commandes * 100 + data.devis * 100) /
+            data.total_projects
+          }
+          delay={0}
         />
         <AnimatedCircle
-          cx="50"
-          cy="0"
-          r={radius}
-          stroke="#FF744A"
+          radius={radius}
           strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={circumference}
-          strokeDashoffset={commandesAnim}
-          rotation="180"
-          origin="55,50"
+          strokeColor="#FF744A"
+          percent={
+            (data.commandes * 100 + data.devis * 100) / data.total_projects
+          }
+          delay={0}
         />
         <AnimatedCircle
-          cx="50"
-          cy="0"
-          r={radius}
-          stroke="#D9D9D9"
+          radius={radius}
           strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={circumference}
-          strokeDashoffset={devisAnim}
-          rotation="180"
-          origin="55,50"
+          strokeColor="#D9D9D9"
+          percent={(data.devis * 100) / data.total_projects}
+          delay={0}
         />
       </Svg>
 
       <Text style={{ position: "absolute", top: 120 }}>
         {data.total_projects} projets
       </Text>
-      <AnimatedBarChart data={formedData} chartConfig={chartConfig} />
-      {/* <BarChart
-        style={{ borderRadius: 16 }}
-        data={formedData}
-        width={width - 10}
-        height={300}
-        yAxisLabel=""
-        chartConfig={chartConfig}
-        verticalLabelRotation={30}
-        withCustomBarColorFromData
-        flatColor
-        fromZero
-      /> */}
 
+      {/* Bar chart */}
+      <AnimatedBarChart data={formedData} chartConfig={chartConfig} />
+
+      {/* Details list */}
       <View style={styles.detailsContainer}>
         {bills.map((bill) => (
           <View style={styles.billInfo} key={bill.id}>
@@ -222,7 +150,9 @@ export default function Dashboard() {
                 <Text style={{ fontWeight: "bold" }}>{bill.montant} $</Text>
               </Text>
             </View>
-            <Text style={{ fontWeight: "bold" }}>{bill.percent} %</Text>
+            <Text style={{ fontWeight: "bold", color: bill.color }}>
+              {bill.percent} %
+            </Text>
           </View>
         ))}
       </View>
@@ -231,6 +161,12 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+  },
   detailsContainer: {
     flexDirection: "column",
     gap: 5,
