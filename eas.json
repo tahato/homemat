@@ -1,0 +1,29 @@
+{
+  "cli": {
+    "version": ">= 16.26.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://homemattest.scriptdzshock.com",
+        "EXPO_PUBLIC_COMPANY_CODE": "b2fb"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://homemattest.scriptdzshock.com",
+        "EXPO_PUBLIC_COMPANY_CODE": "b2fb"
+      }
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

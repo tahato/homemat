@@ -43,7 +43,6 @@ export default function Form() {
           setItem("token", res.data.access_token);
           setItem("userName", res.data.admin.name);
           setItem("appId", res.data.company_id);
-          console.log("idddddddd", res.data.company_id);
           router.replace("./home");
         })
         .catch((err) => {

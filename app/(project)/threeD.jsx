@@ -81,8 +81,6 @@ export default function threeD() {
               onFocus={() => setIsFocus(true)}
               onBlur={() => setIsFocus(false)}
               onChange={(item) => {
-                console.log("sqlfjkgysqdhd sqd", item.value);
-
                 setValue(item.value);
                 setIsFocus(false);
               }}
