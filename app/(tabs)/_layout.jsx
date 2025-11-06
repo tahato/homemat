@@ -12,7 +12,7 @@ export default function RootLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#1C84C6",
+        tabBarActiveTintColor: "#293846",
         tabBarShowLabel: false,
         tabBarItemStyle: {
           height: "100%",
