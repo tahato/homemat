@@ -31,8 +31,8 @@ export default function _layout() {
         swipeEnabled:false
       }}
     >
-      <Tabs.Screen name="[project]" options={{ title: "RoadMap" }} />
-      <Tabs.Screen name="bill" options={{ title: "Bill" }} />
+      <Tabs.Screen name="[project]" options={{ title: "Plan" }} />
+      <Tabs.Screen name="bill" options={{ title: "Facture" }} />
       <Tabs.Screen name="threeD" options={{ title: "3D" }} />
       <Tabs.Screen name="images" options={{ title: "Images" }} />
     </Tabs>

@@ -49,7 +49,7 @@ export default function project() {
           style={{ backgroundColor: "white", flex: 1 }}
           edges={["top", "bottom"]}
         >
-          <Text style={styles.title}>Road Map</Text>
+          <Text style={styles.title}>Plan  </Text>
           <ScrollView
             style={styles.container}
             contentContainerStyle={{ gap: 5 }}

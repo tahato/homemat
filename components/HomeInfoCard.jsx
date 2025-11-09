@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import moment from "moment";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { useGlobalContext } from "../context/GlobaleProvider";
@@ -46,7 +47,7 @@ export default function HomeInfoCard({ project }) {
       <View style={styles.infoContainer}>
         <View style={styles.cardInfo}>
           <View style={styles.details}>
-            <Text style={{ fontWeight: "bold" }}>Client: </Text>
+            <Text style={{ fontWeight: "bold" }}>Responsable: </Text>
             <Text style={{ flexWrap: "wrap" }}>
               {responsable.length > 42
                 ? responsable.substring(0, 42) + "..."
@@ -134,10 +135,15 @@ export default function HomeInfoCard({ project }) {
           </Svg>
         </View>
       </View>
-
-      {/* <View style={styles.details}>
-        <Text style={{ fontSize: 11 }}> Terry Martin le bonoit allegro</Text>
-      </View> */}
+      <View style={styles.cardFooter}>
+        <Text style={{ fontSize: 11 }}>
+          Creé le: {moment(project.created_at).format("DD/MM/YYYY")}{" "}
+        </Text>
+        <Text style={{ fontSize: 11 }}>
+          {" "}
+          Modifeé le: {moment(project.updated_at).format("DD/MM/YYYY")}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -198,6 +204,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "stretch",
+    padding: 5,
+  },
+  cardFooter: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-around",
     padding: 5,
   },
 });
