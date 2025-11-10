@@ -21,7 +21,7 @@ export default function project() {
   const [openIndex, setOpenIndex] = useState(null);
   const [projectInfo, setProjectInfo] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {setProjectId}=useGlobalContext()
+  const { setProjectId, setConceptions } = useGlobalContext();
 
   useFocusEffect(
     useCallback(() => {
@@ -33,6 +33,7 @@ export default function project() {
     try {
       const data = await getProject(id);
       setProjectInfo(data);
+      setConceptions(data.conceptions)
       setLoading(false);
     } catch (e) {
       console.log("error get project", e);
