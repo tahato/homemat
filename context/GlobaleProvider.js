@@ -7,6 +7,7 @@ const GlobalProvider = ({ children }) => {
   const [billId, setBillId] = useState(null);
   const [projectName, setProjectName] = useState("");
   const [projectId, setProjectId] = useState("");
+  const [client, setClient] = useState("");
   const [conceptions, setConceptions] = useState([]);
 
   return (
@@ -20,6 +21,8 @@ const GlobalProvider = ({ children }) => {
         setProjectId,
         conceptions,
         setConceptions,
+        client,
+        setClient
       }}
     >
       {children}

@@ -1,97 +1,153 @@
 import { Ionicons } from "@expo/vector-icons";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { getBillItems } from "../../api/getBillItems";
+import { useGlobalContext } from "../../context/GlobaleProvider";
+import moment from "moment";
 export default function bill() {
-  const bill = {
-    number: "INV-2034",
-    date: "09 Nov 2025",
-    customer: "John Doe",
-    items: [
-      { name: "Plan de pose et de calepinage", qty: 2, price: 5 },
-      { name: "Excellence (3x2m)", qty: 1, price: 3 },
-      { name: "item 2", qty: 1, price: 3 },
-    ],
-    taxRate: 0.05,
+  const [bill, setBill] = useState([]);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [tva, setTva] = useState('');
+  const { billId,client } = useGlobalContext();
+  useFocusEffect(
+    useCallback(() => {
+      if (billId) {
+        fetchData();
+      } else {
+        setLoading(false);
+      }
+    }, [])
+  );
+  const fetchData = async () => {
+    try {
+      const data = await getBillItems(billId);
+      setBill(data);
+      setItems(data.items);
+      setTva(data.taxevalues[0].value);
+      setLoading(false);
+    } catch (e) {
+      console.log("error get project", e);
+    }
   };
-
-  const subtotal = bill.items.reduce((t, i) => t + i.qty * i.price, 0);
-  const tax = subtotal * bill.taxRate;
-  const total = subtotal + tax;
-
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Ionicons name="receipt-outline" size={28} color="#293846" />
-        <Text style={styles.title}> Facture</Text>
-      </View>
+    <>
+      {loading ? (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#007bff" />
+        </View>
+      ) : !billId ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>Aucune facture trouvée </Text>
+        </View>
+      ) : (
+        <ScrollView style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <Ionicons name="receipt-outline" size={28} color="#293846" />
+            <Text style={styles.title}> Facture</Text>
+          </View>
 
-      {/* Info section */}
-      <View style={styles.card}>
-        <Text style={styles.text}>
-          Plan de pose N°:{" "}
-          <Text style={{ fontWeight: "bold" }}>{bill.number}</Text>
-        </Text>
-        <Text style={styles.text}>
-          Client: <Text style={{ fontWeight: "bold" }}>{bill.customer}</Text>
-        </Text>
-        <Text style={styles.text}>
-          Date: <Text style={{ fontWeight: "bold" }}>{bill.date}</Text>
-        </Text>
-      </View>
-
-      <View style={styles.card}>
-        {/* bill table */}
-        <View style={styles.table}>
-          <View style={styles.row}>
-            <Text style={{ fontWeight: "600", fontSize: 15, width: "10%" }}>N°</Text>
-            <Text style={{ fontWeight: "600", fontSize: 15, width: "50%" }}>Item</Text>
-            <Text style={{ fontWeight: "600", fontSize: 15, width: "20%" }}>Qtt</Text>
-            <Text style={{ fontWeight: "600", fontSize: 15, width: "20%", textAlign: "right" }}>
-              Total
+          {/* Info section */}
+          <View style={styles.card}>
+            <Text style={styles.text}>
+              Plan de pose N°:{" "}
+              <Text style={{ fontWeight: "bold" }}>
+                {bill.number2 ?? bill.number1}
+              </Text>
+            </Text>
+            <Text style={styles.text}>
+              Client: <Text style={{ fontWeight: "bold" }}>{client}</Text>
+            </Text>
+            <Text style={styles.text}>
+              Date:{" "}
+              <Text style={{ fontWeight: "bold" }}>
+                {moment(bill.date2 ?? bill.data1).format("DD/MM/YYYY")}
+              </Text>
             </Text>
           </View>
-          {bill.items.map((item, index) => (
-            <View
-              key={index}
-              style={[
-                styles.row,
-                index % 2 === 0
-                  ? { backgroundColor: "#fff" }
-                  : { backgroundColor: "#f3f4f6" },
-              ]}
-            >
-              <Text style={{ fontSize: 15, width: "10%" }}>{index + 1}</Text>
-              <Text style={{ fontSize: 15, width: "50%" }}>{item.name}</Text>
-              <Text style={{ fontSize: 15, width: "20%" }}>{item.qty}</Text>
-              <Text style={{ fontSize: 15, width: "20%", textAlign: "right" }}>
-                {(item.qty * item.price).toFixed(2)}€
-              </Text>
-            </View>
-          ))}
-        </View>
-        {/* Totals */}
-      </View>
-      <View style={{ alignItems: "flex-end" }}>
-        <View style={[styles.card]}>
-          <View style={styles.row}>
-            <Text style={styles.text}>TOTAL HT </Text>
-            <Text style={styles.text}>{subtotal.toFixed(2)} €</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.text}>TVA % 20 </Text>
-            <Text style={styles.text}>{tax.toFixed(2)} €</Text>
-          </View>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total TTC</Text>
-            <Text style={styles.totalValue}>1658.80 €</Text>
-          </View>
-        </View>
-      </View>
 
-      {/* <TouchableOpacity style={styles.button}>
+          <View style={styles.card}>
+            {/* bill table */}
+            <View style={styles.table}>
+              <View style={styles.row}>
+                <Text style={{ fontWeight: "600", fontSize: 15, width: "10%" }}>
+                  N°
+                </Text>
+                <Text style={{ fontWeight: "600", fontSize: 15, width: "55%" }}>
+                  Item
+                </Text>
+                <Text style={{ fontWeight: "600", fontSize: 15, width: "10%" }}>
+                  Qtt
+                </Text>
+                <Text
+                  style={{
+                    fontWeight: "600",
+                    fontSize: 15,
+                    width: "25%",
+                    textAlign: "right",
+                  }}
+                >
+                  Total
+                </Text>
+              </View>
+              {items.map((item, index) => (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.row,
+                    index % 2 === 0
+                      ? { backgroundColor: "#fff" }
+                      : { backgroundColor: "#f3f4f6" },
+                  ]}
+                >
+                  <Text style={{ fontSize: 15, width: "10%" }}>
+                    {index + 1}
+                  </Text>
+                  <Text style={{ fontSize: 15, width: "55%" }}>
+                    {item.description}
+                  </Text>
+                  <Text style={{ fontSize: 15, width: "10%" }}>
+                    {item.quantity}{" "}
+                  </Text>
+                  <Text
+                    style={{ fontSize: 15, width: "25%", textAlign: "right" }}
+                  >
+                    {(item.price * item.quantity).toFixed(2)} €
+                  </Text>
+                </View>
+              ))}
+            </View>
+            {/* Totals */}
+          </View>
+          <View style={{ alignItems: "flex-end" }}>
+            <View style={[styles.card]}>
+              <View style={styles.row}>
+                <Text style={styles.text}>TOTAL HT </Text>
+                <Text style={styles.text}>{bill.ht.toFixed(2)} €</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.text}>TVA {tva}% </Text>
+                <Text style={styles.text}>
+                  {((bill.ht * tva) / 100).toFixed(2)} €
+                </Text>
+              </View>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>Total TTC</Text>
+                <Text style={styles.totalValue}>{bill.ttc.toFixed(2)} €</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Download PDF</Text>
       </TouchableOpacity> */}
-    </ScrollView>
+        </ScrollView>
+      )}
+    </>
   );
 }
 
@@ -115,7 +171,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 5,
     marginBottom: 16,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -132,7 +189,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems:'center',
     marginBottom: 4,
+    paddingHorizontal:10,
   },
   totalRow: {
     flexDirection: "row",

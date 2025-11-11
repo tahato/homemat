@@ -26,7 +26,12 @@ export default function HomeInfoCard({ project }) {
 
   const handlePress = () => {
     setProjectName(project.name);
-    router.push(`/${project.id}`);
+    router.push({
+      pathname: `/${project.id}`,
+      params: {
+        client: client,
+      },
+    });
   };
 
   const radius = 40;

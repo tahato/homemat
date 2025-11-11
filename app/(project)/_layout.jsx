@@ -1,11 +1,12 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { withLayoutContext } from "expo-router";
+import { useState } from "react";
 import { StyleSheet } from "react-native";
 
 export default function _layout() {
   const { Navigator } = createMaterialTopTabNavigator();
-
   const Tabs = withLayoutContext(Navigator);
+  const [firstLoading,setFirstLoading]=useState(false)
   return (
     <Tabs
       screenOptions={{
@@ -28,10 +29,17 @@ export default function _layout() {
           position: "absolute",
           zIndex: 10,
         },
-        swipeEnabled:false
+        swipeEnabled: false,
+      }}
+      screenListeners={{
+        tabPress: (e) => {
+          if (!firstLoading) {
+            e.preventDefault(); // block switching
+          }
+        },
       }}
     >
-      <Tabs.Screen name="[project]" options={{ title: "Plan" }} />
+      <Tabs.Screen name="[project]" options={{ title: "Plan" }} initialParams={{loaded:()=>setFirstLoading(true)}} />
       <Tabs.Screen name="bill" options={{ title: "Facture" }} />
       <Tabs.Screen name="threeD" options={{ title: "3D" }} />
       <Tabs.Screen name="images" options={{ title: "Images" }} />

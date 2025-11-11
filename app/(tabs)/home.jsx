@@ -4,7 +4,6 @@ import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeInfoCard from '../../components/HomeInfoCard';
 import SearchInput from '../../components/SearchInput';
-import { useGlobalContext } from '../../context/GlobaleProvider';
 import { getItem } from '../../tools/AsyncStorage';
 
 export default function Home() {
@@ -81,7 +80,7 @@ export default function Home() {
     }, [fetchData]);
 
     return (
-        <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }} edges={['top']}>
+        <SafeAreaView style={{ backgroundColor: 'white', flex: 1,paddingTop:20 }} edges={[]}>
             <SearchInput search={search} setSearch={setSearch} />
 
             <FlatList

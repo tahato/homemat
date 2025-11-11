@@ -1,3 +1,4 @@
+import { useRoute } from "@react-navigation/native";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
 import {
@@ -14,18 +15,21 @@ import BonCommande from "../../components/listMenus/BonCommande";
 import Estimation from "../../components/listMenus/Estimation";
 import Livraison from "../../components/listMenus/Livraison";
 import Production from "../../components/listMenus/Production";
-import {useGlobalContext} from "../../context/GlobaleProvider"
+import { useGlobalContext } from "../../context/GlobaleProvider";
 export default function project() {
-  const { project } = useLocalSearchParams();
+  const { project, client } = useLocalSearchParams();
   const id = parseInt(project);
   const [openIndex, setOpenIndex] = useState(null);
   const [projectInfo, setProjectInfo] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { setProjectId, setConceptions } = useGlobalContext();
+  const { setProjectId, setConceptions, setBillId, setClient } = useGlobalContext();
+  const route = useRoute();
+  const { loaded } = route.params;
 
   useFocusEffect(
     useCallback(() => {
-      setProjectId(id)
+      setClient(client);
+      setProjectId(id);
       fetchData();
     }, [])
   );
@@ -33,8 +37,10 @@ export default function project() {
     try {
       const data = await getProject(id);
       setProjectInfo(data);
-      setConceptions(data.conceptions)
+      setConceptions(data.conceptions);
+      setBillId(data.order_id ?? data.bill_id);
       setLoading(false);
+      loaded();
     } catch (e) {
       console.log("error get project", e);
     }
@@ -50,7 +56,7 @@ export default function project() {
           style={{ backgroundColor: "white", flex: 1 }}
           edges={["top", "bottom"]}
         >
-          <Text style={styles.title}>Plan  </Text>
+          <Text style={styles.title}>Plan </Text>
           <ScrollView
             style={styles.container}
             contentContainerStyle={{ gap: 5 }}

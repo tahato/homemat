@@ -3,8 +3,8 @@ import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useFocusEffect } from "expo-router";
 import Svg from "react-native-svg";
 import { getDashboard } from "../../api/getDashboard";
-import AnimatedBarChart from "../../components/AnimatedBarChart";
-import AnimatedCircle from "../../components/AnimatedCircle";
+import AnimatedBarChart from "../../components/animated/AnimatedBarChart";
+import AnimatedCircle from "../../components/animated/AnimatedCircle";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
