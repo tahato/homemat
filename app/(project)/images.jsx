@@ -15,6 +15,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getImages } from "../../api/getImages";
 import { useGlobalContext } from "../../context/GlobaleProvider";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 export default function images() {
   const [isFocus, setIsFocus] = useState(false);
@@ -28,11 +29,12 @@ export default function images() {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const [path, setPath] = useState("");
+  const [index, setIndex] = useState(0);
+  const [paths, setPaths] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
       fetchData();
-      // console.log("dataaaaaa", imgs);
     }, [value])
   );
   const fetchData = async () => {
@@ -40,16 +42,23 @@ export default function images() {
       setLoading(true);
       const data = await getImages(value);
       setImgs(data.images);
+      setPaths(
+        data.images.map((img) => ({
+          url: img.path,
+        }))
+      );
+
       setLoading(false);
     } catch (e) {
       console.log("error get project", e);
     }
   };
-  const displayImage = (img) => {
-    // console.log(img);
-    setPath(img)
-    
-    setVisible(true)
+  
+  const displayImage = (img,i) => {
+    setPath(img);
+    setIndex(i);
+
+    setVisible(true);
   };
   return (
     <SafeAreaView edges={["bottom"]}>
@@ -104,7 +113,7 @@ export default function images() {
             }}
           >
             {imgs.map((img, i) => (
-              <TouchableOpacity onPress={() => displayImage(img.path)} key={i}>
+              <TouchableOpacity onPress={() => displayImage(img.path,i)} key={i}>
                 <Image
                   source={{ uri: img.path }}
                   style={{ width: 300, height: 200 }}
@@ -126,13 +135,21 @@ export default function images() {
             setVisible(false);
           }}
         >
-          <View style={styles.modalContent}>
-            <Image
+          {/* <View style={styles.modalContent}> */}
+            {/* <Image
               source={{ uri: path }}
               style={styles.modalImage}
               contentFit="contain"
+            /> */}
+            <ImageViewer
+              imageUrls={paths}
+              // onCancel={() => setVisible(false)}
+              enableSwipeDown
+              enableImageZoom
+              index={index}
+              
             />
-          </View>
+          {/* </View> */}
         </TouchableWithoutFeedback>
       </Modal>
     </SafeAreaView>
@@ -184,8 +201,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   modalImage: {
-    width: '90%',
-    height: '90%',
+    width: "90%",
+    height: "90%",
     borderRadius: 10,
   },
 });
